@@ -1,8 +1,13 @@
 ## Compare the decompositions from PCA, sparse PCA and Non-negative Matrix factorisation.
+library("RColorBrewer")
+library("nsprcomp")
+library("NMF")
 
 exclude.cell.lines <- FALSE
-n <- 2
-inname <- paste0("~/spectrum/data/spectrum_matrix.n", n, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
+n <- 1
+
+tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
+inname <- paste0("~/spectrum/data/spectrum_matrix.n", n,tag, ".txt")
 
 freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 ## Exclude ancient samples for this analysis
@@ -25,6 +30,14 @@ names(name.map) <- gsub("-", ".", info$ID, fixed=TRUE)
 src <- info[,6]
 names(src) <- gsub("-", ".", info$ID, fixed=TRUE)
 
+## Rename and reorder to alexandrov format
+alex <- read.table("~/spectrum/code/alexandrovmap.txt", as.is=TRUE, header=FALSE)
+amap <- alex[,2]
+names(amap) <- alex[,1]
+rownames(freq2)<-amap[rownames(freq2)]
+freq2<-freq2[amap,]
+
+## Plot principal (or other) components
 plot.components <- function(components, name.map, src, cols="black", n.components=4){
     par(mfrow=c(floor(sqrt(n.components)),ceiling(n.components/floor(sqrt(n.components)))))
     for(i in 1:n.components){
@@ -34,12 +47,55 @@ plot.components <- function(components, name.map, src, cols="black", n.component
     }
 }
 
+## Plot factor loadings
 plot.loadings <- function(loadings, n.loadings=4){
-    
+    cols <- rep(c("blue", "black", "red", "grey", "green", "pink"), each=16)
+    par(mfrow=c(n.loadings,1))
+    for(i in 1:n.loadings){
+        plot(loadings[,i], col=cols, xaxt="n", bty="n", xlab=paste0("Component ", i ), ylab="Loading", pch=16)
+        segments(1:NROW(loadings), 0, 1:NROW(loadings), loadings[,i], col=cols)
+        axis(1, at=1:NROW(loadings), labels=names(loadings[,i]), cex.axis=0.8, las=2)
+    }
 }
 
 ## PCA
-pdf(paste0("~/spectrum/plots/","Spectrum_PCA", tag, ".n", n, ".pdf"), 12, 12)
-pca=prcomp(freq2, center=TRUE, scale.=TRUE)
-plot.components(pca$rotation, name.map, src, cols=cols)
+pca=prcomp(t(freq2), center=TRUE, scale.=TRUE)
+
+pdf(paste0("~/spectrum/plots/","Components_PCA.n", n, tag, ".pdf"), 12, 12)
+plot.components(pca$x, name.map, src, cols=cols)
 dev.off()
+
+pdf(paste0("~/spectrum/plots/","Loadings_PCA.n", n, tag, ".pdf"), width=12, height=12)
+plot.loadings(pca$rotation)
+dev.off()
+
+## Sparse PCA
+spca=nsprcomp(t(freq2), center=TRUE, scale.=TRUE, k=10, ncomp=6)
+pdf(paste0("~/spectrum/plots/","Components_SPCA.n", n, tag, ".pdf"), 12, 12)
+plot.components(spca$x, name.map, src, cols=cols)
+dev.off()
+
+pdf(paste0("~/spectrum/plots/","Loadings_SPCA.n", n, tag, ".pdf"), width=12, height=12)
+plot.loadings(spca$rotation)
+dev.off()
+
+## Non-negative Sparse PCA
+nspca=nsprcomp(t(freq2), center=TRUE, scale.=TRUE, k=10, ncomp=6, nneg=TRUE)
+pdf(paste0("~/spectrum/plots/","Components_NSPCA.n", n, tag, ".pdf"), 12, 12)
+plot.components(nspca$x, name.map, src, cols=cols)
+dev.off()
+
+pdf(paste0("~/spectrum/plots/","Loadings_NSPCA.n", n, tag, ".pdf"), width=12, height=12)
+plot.loadings(nspca$rotation)
+dev.off()
+
+## Non-negative Matrix factorization
+nnegmf=nmf(freq2,rank=10)
+pdf(paste0("~/spectrum/plots/","Components_NMF.n", n, tag, ".pdf"), 12, 12)
+plot.components(t(coef(nnegmf)), name.map, src, cols=cols)
+dev.off()
+
+pdf(paste0("~/spectrum/plots/","Loadings_NMF.n", n, tag, ".pdf"), width=12, height=12)
+plot.loadings(basis(nnegmf))
+dev.off()
+
