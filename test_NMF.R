@@ -71,8 +71,8 @@ pdf(paste0("~/spectrum/plots/","Loadings_", ifelse(spec=="spectrum", "", paste0(
 plot.loadings(basis(nnegmf.out), n.loadings=rank)
 dev.off()
 
-## plot(coef(nnegmf.out)[1,], coef(nnegmf.out)[2, ])
-## identify(coef(nnegmf.out)[1,], coef(nnegmf.out)[2, ], colnames(freq2.out))
+plot(coef(nnegmf)[3,], coef(nnegmf)[4, ])
+identify(coef(nnegmf)[3,], coef(nnegmf)[4, ], colnames(freq2.out))
 
 ## nnegmf.test <- nmf(as.matrix(freq2), 2:8, seed="random", nrun=20)
 ## pdf(paste0("~/spectrum/plots/","Diagnostics_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, tag, ".pdf"), 12, 12)
