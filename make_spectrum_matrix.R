@@ -79,9 +79,13 @@ data2 <- aggregate(data, by=list(primary=primary.mut), sum)
 prim.order <- data2$primary
 data2 <- data2[,2:NCOL(data2)]
 rownames(data2) <- prim.order
-freqs2 <- t(t(data2)/colSums(data2))
+## freqs2 <- t(t(data2)/colSums(data2))
+## if(!(all(colSums(freqs2)==1))){stop("Columns do not sum to 1")}
 
-if(!(all(colSums(freqs2)==1))){stop("Columns do not sum to 1")}
+freqs2 <- data2/c(data2["TAT.G",])
 
 outname <- paste0("~/spectrum/data/spectrum_matrix.n", n, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
 write.table(freqs2, outname, col.names=TRUE, row.names=TRUE, quote=F)
+
+outname <- paste0("~/spectrum/data/count_matrix.n", n, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
+write.table(data2, outname, col.names=TRUE, row.names=TRUE, quote=F)

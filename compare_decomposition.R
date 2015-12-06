@@ -2,9 +2,10 @@
 library("RColorBrewer")
 library("nsprcomp")
 library("NMF")
+source("~/spectrum/code/spectrumlib.R")
 
 exclude.cell.lines <- FALSE
-n <- 1
+n <- 2
 
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 inname <- paste0("~/spectrum/data/spectrum_matrix.n", n,tag, ".txt")
@@ -36,11 +37,12 @@ amap <- alex[,2]
 names(amap) <- alex[,1]
 rownames(freq2)<-amap[rownames(freq2)]
 freq2<-freq2[amap,]
+freq2 <- as.matrix(freq2)
 
 ## Plot principal (or other) components
-plot.components <- function(components, name.map, src, cols="black", n.components=4){
+plot.components <- function(components, name.map, src, cols="black", n.components=5){
     par(mfrow=c(floor(sqrt(n.components)),ceiling(n.components/floor(sqrt(n.components)))))
-    for(i in 1:n.components){
+    for(i in 1:(n.components-1)){
         plot(components[,i], components[,i+1], col=cols[name.map[rownames(components)]],, xlab=paste0("PCA", i), ylab=paste0("PCA", i+1), pch=ifelse(src[rownames(components)]=="Genomic_from_cell_lines", 13, 1))
         legend("topleft", c("Cell lines", "Other"), pch=c(13,1), bty="n")
         legend("topright", names(cols), col=cols, bty="n", pch=16)
@@ -90,12 +92,13 @@ plot.loadings(nspca$rotation)
 dev.off()
 
 ## Non-negative Matrix factorization
-nnegmf=nmf(freq2,rank=10)
+rank=4
+nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=20)
 pdf(paste0("~/spectrum/plots/","Components_NMF.n", n, tag, ".pdf"), 12, 12)
-plot.components(t(coef(nnegmf)), name.map, src, cols=cols)
+plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank)
 dev.off()
 
 pdf(paste0("~/spectrum/plots/","Loadings_NMF.n", n, tag, ".pdf"), width=12, height=12)
-plot.loadings(basis(nnegmf))
+plot.loadings(basis(nnegmf), n.loadings=rank)
 dev.off()
 
