@@ -146,7 +146,7 @@ def main(options):
 
         last_line=line
 
-    print("Skipped "+str(skipped)+"/"+str(line_i), file=sys.stdout)
+    print("Skipped "+str(skipped)+"/"+str(line_i), file=sys.stderr)
     for i,x in enumerate(results):
         print(results_samples[i]+"\t"+str(x))
     
