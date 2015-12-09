@@ -2,7 +2,7 @@
 library("RColorBrewer")
 
 exclude.cell.lines <- FALSE
-n <- 2
+n <- 3
 tag <- ""
 
 reverse.complement <- function(str){

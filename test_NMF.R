@@ -19,24 +19,6 @@ freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 ancient <- c("AltaiNeandertal", "Denisova", "Loschbour", "LBK1b_leipzig_v2", "Ust_Ishim")
 freq2 <- freq2[,!( colnames(freq2) %in% ancient)]
 
-## Boilerplate - load info
-info <- read.table("~/spectrum/data/location_info.txt", as.is=TRUE, header=TRUE, sep="\t")
-info[info[,6]=="Genomic from saliva",6]<-"Genomic_from_saliva"
-info[info[,6]=="?",6]<-"Unknown"
-regions <- unique(info[,3])
-cols <- brewer.pal(length(regions), "Set1")
-cols[6] <- "darkgrey"
-sources <- unique(info[,6])
-source.cols <- brewer.pal(length(sources), "Set2")
-names(cols) <- regions
-names(source.cols) <- sources
-name.map <- info[,3]
-names(name.map) <- gsub("-", ".", info$ID, fixed=TRUE)
-src <- info[,6]
-names(src) <- gsub("-", ".", info$ID, fixed=TRUE)
-reg <- info[,3]
-names(reg) <- gsub("-", ".", info$ID, fixed=TRUE) 
-
 ## Rename and reorder to alexandrov format
 alex <- read.table("~/spectrum/code/alexandrovmap.txt", as.is=TRUE, header=FALSE)
 amap <- alex[,2]
@@ -67,12 +49,17 @@ pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", past
 plot.components(t(coef(nnegmf.out)), name.map, src, cols=cols, n.components=rank)
 dev.off()
 
+write.table(t(coef(nnegmf)), paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
+write.table(basis(nnegmf), paste0("~/spectrum/plots/","Loadings_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
+
 pdf(paste0("~/spectrum/plots/","Loadings_", ifelse(spec=="spectrum", "", paste0(spec, "_")),"NMF.n", n, ".r", rank, tag, "_out.pdf"), width=12, height=12)
 plot.loadings(basis(nnegmf.out), n.loadings=rank)
 dev.off()
 
-plot(coef(nnegmf)[3,], coef(nnegmf)[4, ])
-identify(coef(nnegmf)[3,], coef(nnegmf)[4, ], colnames(freq2.out))
+
+
+## plot(coef(nnegmf)[3,], coef(nnegmf)[4, ])
+## identify(coef(nnegmf)[3,], coef(nnegmf)[4, ], colnames(freq2.out))
 
 ## nnegmf.test <- nmf(as.matrix(freq2), 2:8, seed="random", nrun=20)
 ## pdf(paste0("~/spectrum/plots/","Diagnostics_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, tag, ".pdf"), 12, 12)
