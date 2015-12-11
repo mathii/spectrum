@@ -18,11 +18,34 @@ names(src) <- gsub("-", ".", info$ID, fixed=TRUE)
 reg <- info[,3]
 names(reg) <- gsub("-", ".", info$ID, fixed=TRUE) 
 
+reverse.complement <- function(str){
+    mm <- c("A", "C", "G", "T")
+    names(mm) <- c("T", "G", "C", "A")
+    bits <- strsplit(str, ".", fixed=TRUE)[[1]]
+    for(i in 1:length(bits)){
+        b=bits[i]
+        bb=strsplit(b,"")[[1]]
+        cc=mm[bb]
+        bits[i]=paste0(rev(cc), collapse="")
+    }
+    return(paste0(bits, collapse="."))
+}
+
 ## Plot principal (or other) components
-plot.components <- function(components, name.map, src, cols="black", n.components=4){
-    par(mfrow=c(floor(sqrt(n.components)),ceiling(n.components/floor(sqrt(n.components)))))
-    for(i in 1:(n.components-1)){
-        plot(components[,i], components[,i+1], col=cols[name.map[rownames(components)]],, xlab=paste0("PCA", i), ylab=paste0("PCA", i+1), pch=ifelse(src[rownames(components)]=="Genomic_from_cell_lines", 13, 1))
+plot.components <- function(components, name.map, src, cols="black", n.components=4, layout=NA, xploti=c(), yploti=c()){
+    if(all(is.na(layout))){
+        par(mfrow=c(floor(sqrt(n.components-1)),ceiling((n.components-1)/floor(sqrt(n.components-1)))))
+    }else{
+        par(mfrow=layout)
+    }
+
+    if(length(xploti)==0){
+        xploti <- c(1:(n.components-1))
+        yploti <- c(2:n.components)
+    }
+    
+    for(i in 1:length(xploti)){
+        plot(components[,xploti[i]], components[,yploti[i]], col=cols[name.map[rownames(components)]],, xlab=paste0("PCA", xploti[i]), ylab=paste0("PCA", yploti[i]), pch=ifelse(src[rownames(components)]=="Genomic_from_cell_lines", 13, 1))
         legend("topleft", c("Cell lines", "Other"), pch=c(13,1), bty="n")
         legend("topright", names(cols), col=cols, bty="n", pch=16)
     }
