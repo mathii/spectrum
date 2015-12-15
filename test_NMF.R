@@ -7,9 +7,9 @@ library("fastICA")
 
 source("~/spectrum/code/spectrumlib.R")
 
-exclude.cell.lines <- TRUE
-n <- 1
-rank <- 2
+exclude.cell.lines <- FALSE
+n <- 2
+rank <- 4
 spec <- "spectrum"
 
 
@@ -35,7 +35,7 @@ freq2["ATA.C",] <- 0.0001         #Null row.
 
 ## Non-negative Matrix factorization
 nnegmf=nmf(as.matrix(freq2),rank=rank, seed="ica", nrun=20)
-pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), ifelse(rank==2,6,12), 12)
+pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), ifelse(rank==2,6,12), ifelse(rank==2,6,12))
 if(n==2 & rank==4){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(1,3,1,3), yploti=c(4,2,2,4))
 }else if(n==3 & rank==3){
