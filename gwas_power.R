@@ -1,4 +1,5 @@
 ## Estimate sample size for gwas. 
+source("~/spectrum/code/spectrumlib.R")
 
 exclude.cell.lines <- FALSE
 n <- 2
@@ -11,7 +12,6 @@ N.mutations <- 60                       #Per trio, say
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
 
-we <- reg[colnames(norm2)]=="WestEurasia"
 
 freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 
@@ -25,6 +25,7 @@ freq2 <- as.matrix(freq2)
 
 norm2<-t(t(freq2)/colSums(freq2))
 
+we <- reg[colnames(norm2)]=="WestEurasia"
 norm2 <- norm2[,!is.na(we)]
 we <- reg[colnames(norm2)]=="WestEurasia"
 
@@ -41,4 +42,4 @@ x1 <- N.mutations*nwe.val*(1+s.inc)
 ## Need to get this many sds
 sdev <- abs(qnorm(log(0.5e-7), log=TRUE))
 
-Nfunc <- function(p){sdev*sdev*(x1/p/p+x0/(1-p)/(1-p))/(x1-x0)/(x1-x0)}
+Nfunc <- function(p){p*sdev*sdev*(x1/p/p+x0/(1-p)/(1-p))/(x1-x0)/(x1-x0)}

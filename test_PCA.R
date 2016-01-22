@@ -22,4 +22,4 @@ names(lat)<-gsub("-", ".", info$ID)
 lat.we <- lat[rownames(data.we)]]
 lon<-info$Longitude
 names(lon)<-gsub("-", ".", info$ID)
-lon.we <- lon[rownames(data.we)]]
+lon.we <- lon[rownames(data.we)]
