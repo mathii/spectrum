@@ -13,7 +13,7 @@ import sys, getopt, gzip, pdb
 
 BASES=["A", "C", "G", "T"]
 #Including reverse complements
-SIG1=set(["TCT.T", "TCC.T", "CCC.T", "ACC.T", "AGA.A", "GGA.A", "GGG.T", "GGT.A"])
+SIG1=set(["TCT.T", "TCC.T", "CCC.T", "ACC.T", "AGA.A", "GGA.A", "GGG.A", "GGT.A"])
 
 ##########################################################################################################
 
