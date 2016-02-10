@@ -1,7 +1,7 @@
 ## Manhattan and QQ plots of the GWAS results.
 
 source("~/selection/code/lib/mh_plot_lib.R")
-plots <- c("child", "maternal", "paternal")
+plots <- c( "paternal", "maternal","child")
 type <- c("add", "dom", "rec")
 
 for( what in plots ){
