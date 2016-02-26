@@ -157,15 +157,17 @@ def main(options):
             # Check for the condition, exactly options["count"] of the allele in the dataset.
 
             gtbits=bits[9:]
-            gtbits.pop(polarise_i)
-            gts=[g[0]+g[2] for g in gtbits]
+            if polarise_i:
+                gtbits.pop(polarise_i)
+            gts=[g[0]+g[2] for g in gtbits]   #Genotypes excludeing the polarising sample
+            gts_with_pol=[g[0]+g[2] for g in bits[9:]]   #Genotypes with the polarising sample
             het_count=sum([g in hetgts for g in gts])
             hom_count=sum([g==mutgt for g in gts])
             total_count=het_count+2*hom_count
             if total_count==options["count"]:
                 counted+=1
-                which_is_het= [i for i, x in enumerate(gts) if x in hetgts]
-                which_is_hom= [i for i, x in enumerate(gts) if x==mutgt]
+                which_is_het= [i for i, x in enumerate(gts_with_pol) if x in hetgts]
+                which_is_hom= [i for i, x in enumerate(gts_with_pol) if x==mutgt]
                 key=(tnc[0]+anc+tnc[2], mut)
                 if key in results:
                     for igt in which_is_het:
