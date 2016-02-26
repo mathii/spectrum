@@ -2,8 +2,19 @@
 library("RColorBrewer")
 
 exclude.cell.lines <- FALSE
-n <- 3
+n <- 2
 tag <- ""
+
+cA <- commandArgs(TRUE)
+if(length(cA)>0){
+    n <- as.numeric(cA[1])
+}
+if(length(cA)>1){
+    exclude.cell.lines <- as.logical(cA[2])
+}
+if(length(cA)>2{
+    tag <- cA[3]
+}
 
 reverse.complement <- function(str){
     mm <- c("A", "C", "G", "T")
@@ -19,11 +30,10 @@ reverse.complement <- function(str){
 }
 
 
-ancient <- c("AltaiNeandertal", "Denisova", "Loschbour", "LBK1b_leipzig_v2", "Ust_Ishim")
 exclude <- c()
 ref <- c("HumanRef",  "panTro2",  "Ancestor")
 
-info <- read.table("~/spectrum/data/location_info.txt", as.is=TRUE, header=TRUE, sep="\t")
+info <- read.table("~/spectrum/code/location_info.txt", as.is=TRUE, header=TRUE, sep="\t")
 info[info[,6]=="Genomic from saliva",6]<-"Genomic_from_saliva"
 info[info[,6]=="?",6]<-"Unknown"
 
@@ -41,7 +51,7 @@ names(name.map) <- info$ID
 src <- info[,6]
 names(src) <- info$ID
 
-raw <- read.table(paste0("~/spectrum/data/counts/chr1.n", n ,".txt"), as.is=TRUE, header=TRUE)
+raw <- read.table(paste0("~/spectrum/counts/chr1.n", n ,".txt"), as.is=TRUE, header=TRUE)
 names(raw)<-gsub(".", "-", names(raw), fixed=TRUE)
 data <- data.matrix(raw[,2:NCOL(raw)])
 rownames(data) <- raw[,1]
@@ -57,7 +67,6 @@ for(chr in 2:22){
 totals <- colSums(data)
 min.total <- 1000
 data <- data[,totals>min.total]
-## data <- data[,!(colnames(data) %in% ancient)]
 data <- data[,!(colnames(data) %in% exclude)]
 data <- data[,!(colnames(data) %in% ref)]
 exclude.ABteam <- grep("[AB]\\.", colnames(data), value=TRUE)
