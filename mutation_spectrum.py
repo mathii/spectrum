@@ -154,8 +154,11 @@ def main(options):
                 skipped+=1
                 continue
             
-            # Check for the condition, exactly options["count"] of the allele in the dataset. 
-            gts=[g[0]+g[2] for g in bits[9:]]
+            # Check for the condition, exactly options["count"] of the allele in the dataset.
+
+            gtbits=bits[9:]
+            gtbits.pop(polarise_i)
+            gts=[g[0]+g[2] for g in gtbits]
             het_count=sum([g in hetgts for g in gts])
             hom_count=sum([g==mutgt for g in gts])
             total_count=het_count+2*hom_count
