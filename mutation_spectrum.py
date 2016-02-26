@@ -162,6 +162,7 @@ def main(options):
             het_count=sum([g in hetgts for g in gts])
             hom_count=sum([g==mutgt for g in gts])
             total_count=het_count+2*hom_count
+
             if total_count==options["count"]:
                 counted+=1
                 which_is_het= [i for i, x in enumerate(gts) if x in hetgts]
