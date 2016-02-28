@@ -1,7 +1,7 @@
 library("RColorBrewer")
 
 ## Boilerplate, load info
-info <- read.table("~/spectrum/data/location_info.txt", as.is=TRUE, header=TRUE, sep="\t")
+info <- read.table("~/spectrum/code/location_info.txt", as.is=TRUE, header=TRUE, sep="\t")
 info[info[,6]=="Genomic from saliva",6]<-"Genomic_from_saliva"
 info[info[,6]=="?",6]<-"Unknown"
 regions <- unique(info[,3])

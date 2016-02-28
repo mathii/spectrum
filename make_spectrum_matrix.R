@@ -10,10 +10,7 @@ if(length(cA)>0){
     n <- as.numeric(cA[1])
 }
 if(length(cA)>1){
-    exclude.cell.lines <- as.logical(cA[2])
-}
-if(length(cA)>2{
-    tag <- cA[3]
+    exclude.cell.lines <- as.logical(as.numeric(cA[2]))
 }
 
 reverse.complement <- function(str){
@@ -57,7 +54,7 @@ data <- data.matrix(raw[,2:NCOL(raw)])
 rownames(data) <- raw[,1]
 data <- data[order(rownames(data)),]
 for(chr in 2:22){
-    raw <- read.table(paste0("~/spectrum/data/counts/chr", chr, ".n", n, ".txt"), as.is=TRUE, header=TRUE)
+    raw <- read.table(paste0("~/spectrum/counts/chr", chr, ".n", n, ".txt"), as.is=TRUE, header=TRUE)
     d <- data.matrix(raw[,2:NCOL(raw)])
     rownames(d) <- raw[,1]
     d <- d[order(rownames(d)),]
@@ -69,10 +66,7 @@ min.total <- 1000
 data <- data[,totals>min.total]
 data <- data[,!(colnames(data) %in% exclude)]
 data <- data[,!(colnames(data) %in% ref)]
-exclude.ABteam <- grep("[AB]\\.", colnames(data), value=TRUE)
-data <- data[,!(colnames(data) %in% exclude.ABteam)]
 
-## Exclude cell lines
 if(exclude.cell.lines){
     data <- data[,(colnames(data) %in% names(src))]
     data <- data[,src[colnames(data)]!="Genomic_from_cell_lines"]
@@ -88,10 +82,17 @@ data2 <- aggregate(data, by=list(primary=primary.mut), sum)
 prim.order <- data2$primary
 data2 <- data2[,2:NCOL(data2)]
 rownames(data2) <- prim.order
-## freqs2 <- t(t(data2)/colSums(data2))
-## if(!(all(colSums(freqs2)==1))){stop("Columns do not sum to 1")}
 
-freqs2 <- data2/c(data2["TAT.G",])
+## Rename and reorder to alexandrov format
+alex <- read.table("~/spectrum/code/alexandrovmap.txt", as.is=TRUE, header=FALSE)
+amap <- alex[,2]
+names(amap) <- alex[,1]
+rownames(data2)<-amap[rownames(data2)]
+data2<-data2[amap,]
+freqs2 <- data2/c(data2["ATA.C",])
+
+freqs2 <- as.matrix(freqs2)
+data2 <- as.matrix(data2)
 
 outname <- paste0("~/spectrum/data/spectrum_matrix.n", n, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
 write.table(freqs2, outname, col.names=TRUE, row.names=TRUE, quote=F)
