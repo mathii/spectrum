@@ -49,7 +49,7 @@ if(n==2 & rank==4){
 }else if(n==3 & rank==4){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,3,1), yploti=c(4,1,4,3))
 }else{
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank)
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layour=c(2,2))
 }
 dev.off()
 
