@@ -12,7 +12,7 @@ spec <- "spectrum"
 exclude.cell.lines <- FALSE
 n <- 2
 rank <- 4
-
+method <- "random"
 diagnostics <- FALSE
 
 cA <- commandArgs(TRUE)
@@ -26,7 +26,10 @@ if(length(cA)>2){
     exclude.cell.lines <- as.logical(as.numeric(cA[3]))
 }
 if(length(cA)>3){
-    diagnostics <- as.logical(as.numeric(cA[3]))
+    diagnostics <- as.logical(as.numeric(cA[4]))
+}
+if(lenght(cA)>4){
+    method <- cA[5]
 }
 
 
@@ -42,8 +45,7 @@ freq2["ATA.C",] <- 0.00001         #Null row.
 ## freq2 <- t(t(freq2)/colSums(freq2))
 
 ## Non-negative Matrix factorization
-## nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=100, seed = rep(123456, 6))
-nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=100, seed = "ica")
+nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=100, seed = ifelse(method=="random", rep(123456, 6), "ica"))
 pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
 if(n==2 & rank==4){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1,2,3), yploti=c(1,4,3,4))
