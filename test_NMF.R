@@ -12,26 +12,32 @@ n <- 2
 rank <- 4
 spec <- "spectrum"
 
+exclude.cell.lines <- FALSE
+n <- 2
+rank <- 4
+
+cA <- commandArgs(TRUE)
+if(length(cA)>0){
+    n <- as.numeric(cA[1])
+}
+if(length(cA)>1){
+    rank <- as.numeric(cA[2])
+}
+if(length(cA)>2){
+    exclude.cell.lines <- as.logical(as.numeric(cA[3]))
+}
+
 
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
 
 freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
-## Exclude ancient samples for this analysis
-ancient <- c("AltaiNeandertal", "Denisova", "Loschbour", "LBK1b_leipzig_v2", "Ust_Ishim")
-freq2 <- freq2[,!( colnames(freq2) %in% ancient)]
-
-## Rename and reorder to alexandrov format
-alex <- read.table("~/spectrum/code/alexandrovmap.txt", as.is=TRUE, header=FALSE)
-amap <- alex[,2]
-names(amap) <- alex[,1]
-rownames(freq2)<-amap[rownames(freq2)]
-freq2<-freq2[amap,]
-freq2 <- as.matrix(freq2)
 
 ## Subtract off minimal mutations. 
 freq2 <- freq2-apply(freq2, 1, min)
-freq2["ATA.C",] <- 0.0001         #Null row.
+freq2["ATA.C",] <- 0.000001         #Null row.
+
+## freq2 <- t(t(freq2)/colSums(freq2))
 
 ## Non-negative Matrix factorization
 nnegmf=nmf(as.matrix(freq2),rank=rank, seed="ica", nrun=20)
@@ -43,7 +49,7 @@ if(n==2 & rank==4){
 }else if(n==3 & rank==4){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,3,1), yploti=c(4,1,4,3))
 }else{
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank)
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layour=c(2,2))
 }
 dev.off()
 
