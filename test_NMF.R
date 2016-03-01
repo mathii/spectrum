@@ -28,7 +28,7 @@ if(length(cA)>2){
 if(length(cA)>3){
     diagnostics <- as.logical(as.numeric(cA[4]))
 }
-if(lenght(cA)>4){
+if(length(cA)>4){
     method <- cA[5]
 }
 
@@ -46,6 +46,8 @@ freq2["ATA.C",] <- 0.00001         #Null row.
 
 ## Non-negative Matrix factorization
 nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=100, seed = ifelse(method=="random", rep(123456, 6), "ica"))
+
+if(!diagnostics){
 pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
 if(n==2 & rank==4){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1,2,3), yploti=c(1,4,3,4))
@@ -78,7 +80,7 @@ dev.off()
 
 write.table(t(coef(nnegmf)), paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
 write.table(bas/scale, paste0("~/spectrum/plots/","Loadings_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
-
+}
 
 ## outliers <- c("B_Crete.1", "B_Crete.2"   ,"B_Dai.4"    ,"B_Han.3", "B_Australian.4", "S_Miao.1", "S_Miao.2", "S_Russian.1", "S_Mongola.1")
 ## outliers <- c("B_Mixe.1", "S_Pima.2")
