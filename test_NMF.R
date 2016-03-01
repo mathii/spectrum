@@ -7,9 +7,6 @@ library("fastICA")
 
 source("~/spectrum/code/spectrumlib.R")
 
-exclude.cell.lines <- FALSE
-n <- 2
-rank <- 4
 spec <- "spectrum"
 
 exclude.cell.lines <- FALSE
@@ -40,21 +37,22 @@ freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 
 ## Subtract off minimal mutations. 
 freq2 <- freq2-apply(freq2, 1, min)
-freq2["ATA.C",] <- 0.000001         #Null row.
+freq2["ATA.C",] <- 0.00001         #Null row.
 
 ## freq2 <- t(t(freq2)/colSums(freq2))
 
 ## Non-negative Matrix factorization
-nnegmf=nmf(as.matrix(freq2),rank=rank, seed="ica", nrun=20)
+## nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=100, seed = rep(123456, 6))
+nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=100, seed = "ica")
 pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
 if(n==2 & rank==4){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1,2,3), yploti=c(3,4,1,4))
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1,2,3), yploti=c(1,4,3,4))
 }else if(n==3 & rank==3){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1), yploti=c(1,3))
 }else if(n==3 & rank==4){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,3,1), yploti=c(4,1,4,3))
 }else{
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layour=c(2,2))
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2))
 }
 dev.off()
 

@@ -45,7 +45,7 @@ plot.components <- function(components, name.map, src, cols="black", n.component
     }
     
     for(i in 1:length(xploti)){
-        plot(components[,xploti[i]], components[,yploti[i]], col=cols[name.map[rownames(components)]],, xlab=paste0("PCA", xploti[i]), ylab=paste0("PCA", yploti[i]), pch=ifelse(src[rownames(components)]=="Genomic_from_cell_lines", 13, 1))
+        plot(components[,xploti[i]], components[,yploti[i]], col=cols[name.map[rownames(components)]],, xlab=paste0("PCA", xploti[i]), ylab=paste0("PCA", yploti[i]), pch=ifelse(src[rownames(components)]=="Genomic_from_cell_lines", 13, 1), xaxt="n", yaxt="n")
         legend("topleft", c("Cell lines", "Other"), pch=c(13,1), bty="n")
         legend("topright", names(cols), col=cols, bty="n", pch=16)
     }
@@ -57,8 +57,8 @@ plot.loadings <- function(loadings, n.loadings=4){
     
     par(mfrow=c(n.loadings,1))
     for(i in 1:n.loadings){
-        plot(loadings[,i], col=cols, xaxt="n", bty="n", xlab=paste0("Component ", i ), ylab="Loading", pch=16)
-        segments(1:NROW(loadings), 0, 1:NROW(loadings), loadings[,i], col=cols, lwd=2)
+        plot(loadings[,i]/sum(loadings[,i]), col=cols, xaxt="n", bty="n", xlab=paste0("Component ", i ), ylab="Proportion of mutations", pch=16)
+        segments(1:NROW(loadings), 0, 1:NROW(loadings), loadings[,i]/sum(loadings[,i]), col=cols, lwd=2)
         axis(1, at=1:NROW(loadings), labels=names(loadings[,i]), cex.axis=0.8, las=2)
     }
 }
