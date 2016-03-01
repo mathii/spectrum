@@ -16,6 +16,8 @@ exclude.cell.lines <- FALSE
 n <- 2
 rank <- 4
 
+diagnostics <- FALSE
+
 cA <- commandArgs(TRUE)
 if(length(cA)>0){
     n <- as.numeric(cA[1])
@@ -25,6 +27,9 @@ if(length(cA)>1){
 }
 if(length(cA)>2){
     exclude.cell.lines <- as.logical(as.numeric(cA[3]))
+}
+if(length(cA)>3){
+    diagnostics <- as.logical(as.numeric(cA[3]))
 }
 
 
@@ -41,9 +46,9 @@ freq2["ATA.C",] <- 0.000001         #Null row.
 
 ## Non-negative Matrix factorization
 nnegmf=nmf(as.matrix(freq2),rank=rank, seed="ica", nrun=20)
-pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), ifelse(rank==2,6,12), ifelse(rank==2,6,12))
+pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
 if(n==2 & rank==4){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(1,3,1,3), yploti=c(4,2,2,4))
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1,2,3), yploti=c(3,4,1,4))
 }else if(n==3 & rank==3){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1), yploti=c(1,3))
 }else if(n==3 & rank==4){
@@ -90,13 +95,14 @@ write.table(bas/scale, paste0("~/spectrum/plots/","Loadings_",  ifelse(spec=="sp
 ## plot(coef(nnegmf)[3,], coef(nnegmf)[4, ])
 ## identify(coef(nnegmf)[3,], coef(nnegmf)[4, ], colnames(freq2.out))
 
-## nnegmf.test <- nmf(as.matrix(freq2), 2:8, seed="random", nrun=50)
+if(diagnostics){
+    nnegmf.test <- nmf(as.matrix(freq2), 2:8, seed="random", nrun=50)
 
-## pdf(paste0("~/spectrum/plots/","Diagnostics_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, tag, ".pdf"), 12, 12)
-## plot(nnegmf.test)
-## dev.off()
+    pdf(paste0("~/spectrum/plots/","Diagnostics_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, tag, ".pdf"), 12, 12)
+    plot(nnegmf.test)
+    dev.off()
 
-## pdf(paste0("~/spectrum/plots/","DiagnosticsSmall_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, tag, ".pdf"), 12, 4)
-## plot(nnegmf.test, what=c("dispersion", "rss", "silhouette"))
-## dev.off()
-
+    pdf(paste0("~/spectrum/plots/","DiagnosticsSmall_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, tag, ".pdf"), 12, 4)
+    plot(nnegmf.test, what=c("dispersion", "rss", "silhouette"))
+    dev.off()
+}
