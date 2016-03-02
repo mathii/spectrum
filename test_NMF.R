@@ -45,7 +45,7 @@ freq2["ATA.C",] <- 0.00001         #Null row.
 ## freq2 <- t(t(freq2)/colSums(freq2))
 
 ## Non-negative Matrix factorization
-nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=100, seed = ifelse(method=="random", rep(123456, 6), "ica"))
+nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=200, seed = ifelse(method=="random", rep(123456, 6), method))
 
 if(!diagnostics){
 pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
