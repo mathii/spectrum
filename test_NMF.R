@@ -14,6 +14,7 @@ n <- 2
 rank <- 4
 method <- "random"
 diagnostics <- FALSE
+subtract <- FALSE
 
 cA <- commandArgs(TRUE)
 if(length(cA)>0){
@@ -31,6 +32,9 @@ if(length(cA)>3){
 if(length(cA)>4){
     method <- cA[5]
 }
+if(length(cA)>5){
+    subtract <- as.logical(as.numeric(cA[4]))
+}
 
 
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
@@ -39,16 +43,20 @@ inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
 freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 
 ## Subtract off minimal mutations. 
-freq2 <- freq2-apply(freq2, 1, min)
-freq2["ATA.C",] <- 0.00001         #Null row.
 
+if(subtract){
+    freq2 <- freq2-apply(freq2, 1, min)
+    freq2["ATA.C",] <- 0.00001         #Null row.
+}
 ## freq2 <- t(t(freq2)/colSums(freq2))
 
 ## Non-negative Matrix factorization
 nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=200, seed = ifelse(method=="random", rep(123456, 6), method))
 
+outtag <-  paste0(ifelse(spec=="spectrum", "", spec), ifelse(subtract, "_subtract", ""), "_", method)
+
 if(!diagnostics){
-pdf(paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
+pdf(paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
 if(n==2 & rank==4){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1,2,3), yploti=c(1,4,3,4))
 }else if(n==3 & rank==3){
@@ -74,12 +82,12 @@ scale <- refmap[nbas]
 
 ## if(n==3 & rank==4){bas <- bas[,c(2,4,3,1)]}
 ## if(n==3 & rank==3){bas <- bas[,c(2,1,3)]}
-pdf(paste0("~/spectrum/plots/","Loadings_", ifelse(spec=="spectrum", "", paste0(spec, "_")),"NMF.n", n, ".r", rank, tag, ".pdf"), width=12, height=rank*4)
+pdf(paste0("~/spectrum/plots/","Loadings", outtag,"_NMF.n", n, ".r", rank, tag, ".pdf"), width=12, height=rank*4)
 plot.loadings(bas/scale, n.loadings=rank)
 dev.off()
 
-write.table(t(coef(nnegmf)), paste0("~/spectrum/plots/","Components_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
-write.table(bas/scale, paste0("~/spectrum/plots/","Loadings_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
+write.table(t(coef(nnegmf)), paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
+write.table(bas/scale, paste0("~/spectrum/plots/","Loadings",  outtag, "_NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
 }
 
 ## outliers <- c("B_Crete.1", "B_Crete.2"   ,"B_Dai.4"    ,"B_Han.3", "B_Australian.4", "S_Miao.1", "S_Miao.2", "S_Russian.1", "S_Mongola.1")
