@@ -33,7 +33,7 @@ if(length(cA)>4){
     method <- cA[5]
 }
 if(length(cA)>5){
-    subtract <- as.logical(as.numeric(cA[4]))
+    subtract <- as.logical(as.numeric(cA[6]))
 }
 
 
@@ -51,14 +51,21 @@ if(subtract){
 ## freq2 <- t(t(freq2)/colSums(freq2))
 
 ## Non-negative Matrix factorization
-nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=200, seed = ifelse(method=="random", rep(123456, 6), method))
+seed <- ifelse(method=="random", rep(123456, 6), method)
 
 outtag <-  paste0(ifelse(spec=="spectrum", "", spec), ifelse(subtract, "_subtract", ""), "_", method)
 
+logfile <- paste0("~/spectrum/plots/","Info",  outtag, "_NMF.n", n, ".r", rank, tag, ".log")
+
 if(!diagnostics){
+cat(paste0("ARGS: ", cA, "\n"), file=logfile)
+nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=200, seed = seed )
+    
 pdf(paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
-if(n==2 & rank==4){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1,2,3), yploti=c(1,4,3,4))
+if(n==2 & rank==4 & method=="ica"){
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(4,2,1,2), yploti=c(1,3,3,4))
+}else if(n==2 & rank==4 & method=="random"){
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(3,1,2,1), yploti=c(2,4,4,3))
 }else if(n==3 & rank==3){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1), yploti=c(1,3))
 }else if(n==3 & rank==4){
@@ -88,6 +95,23 @@ dev.off()
 
 write.table(t(coef(nnegmf)), paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
 write.table(bas/scale, paste0("~/spectrum/plots/","Loadings",  outtag, "_NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
+
+features <- lapply(extractFeatures(nnegmf), function(x){rownames(freq2)[x]})
+residuals <- residuals(nnegmf)
+cat(paste0("RES: ", residuals, "\n"), file=logfile, append=TRUE)
+for(i in 1:length(features)){
+    cat(paste0("F", i, ": ", features[[i]], "\n", collapse=" "), file=logfile, append=TRUE)
+}
+## Print errors for best fit. 
+abs.errors <- as.matrix((abs((fitted(nnegmf)-freq2))))
+sq.errors <- abs.errors*abs.errors
+log.errors <- as.matrix((abs(log(fitted(nnegmf)/freq2))))
+cat(paste0("MAXAD: ", max(abs.errors), "\n"), file=logfile, append=TRUE)
+cat(paste0("MNAD: ", mean(abs.errors), "\n"), file=logfile, append=TRUE)
+cat(paste0("MAXSD: ", max(sq.errors), "\n"), file=logfile, append=TRUE)
+cat(paste0("MNSD: ", mean(sq.errors), "\n"), file=logfile, append=TRUE)
+cat(paste0("MAXLD: ", max(log.errors), "\n"), file=logfile, append=TRUE)
+cat(paste0("MNLD: ", mean(log.errors), "\n"), file=logfile, append=TRUE)
 }
 
 ## outliers <- c("B_Crete.1", "B_Crete.2"   ,"B_Dai.4"    ,"B_Han.3", "B_Australian.4", "S_Miao.1", "S_Miao.2", "S_Russian.1", "S_Mongola.1")
@@ -106,13 +130,13 @@ write.table(bas/scale, paste0("~/spectrum/plots/","Loadings",  outtag, "_NMF.n",
 ## identify(coef(nnegmf)[3,], coef(nnegmf)[4, ], colnames(freq2.out))
 
 if(diagnostics){
-    nnegmf.test <- nmf(as.matrix(freq2), 2:8, seed="random", nrun=50)
+    nnegmf.test <- nmf(as.matrix(freq2), 2:8, seed=seed, nrun=200)
 
-    pdf(paste0("~/spectrum/plots/","Diagnostics_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, tag, ".pdf"), 12, 12)
+    pdf(paste0("~/spectrum/plots/","Diagnostics",  outtag, "NMF.n", n, tag, ".pdf"), 12, 12)
     plot(nnegmf.test)
     dev.off()
 
-    pdf(paste0("~/spectrum/plots/","DiagnosticsSmall_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, tag, ".pdf"), 12, 4)
+    pdf(paste0("~/spectrum/plots/","DiagnosticsSmall",  outtag, "NMF.n", n, tag, ".pdf"), 12, 4)
     plot(nnegmf.test, what=c("dispersion", "rss", "silhouette"))
     dev.off()
 }
