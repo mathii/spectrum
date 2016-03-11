@@ -59,7 +59,7 @@ logfile <- paste0("~/spectrum/plots/","Info",  outtag, "_NMF.n", n, ".r", rank, 
 
 if(!diagnostics){
 cat(paste0("ARGS: ", cA, "\n"), file=logfile)
-nnegmf=nmf(as.matrix(freq2),rank=rank, nrun=200, seed = seed )
+nnegmf <- nmf(as.matrix(freq2),rank=rank, nrun=200, seed = seed )
     
 pdf(paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
 if(n==2 & rank==4 & method=="ica"){
@@ -133,10 +133,11 @@ if(diagnostics){
     nnegmf.test <- nmf(as.matrix(freq2), 2:8, seed=seed, nrun=200)
 
     pdf(paste0("~/spectrum/plots/","Diagnostics",  outtag, "NMF.n", n, tag, ".pdf"), 12, 12)
-    plot(nnegmf.test)
+    ## Yikes!
+    plot(plot(nnegmf.test))
     dev.off()
 
     pdf(paste0("~/spectrum/plots/","DiagnosticsSmall",  outtag, "NMF.n", n, tag, ".pdf"), 12, 4)
-    plot(nnegmf.test, what=c("dispersion", "rss", "silhouette"))
+    plot(plot(nnegmf.test, what=c("dispersion", "rss", "silhouette")))
     dev.off()
 }
