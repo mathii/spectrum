@@ -63,13 +63,13 @@ nnegmf <- nmf(as.matrix(freq2),rank=rank, nrun=200, seed = seed )
     
 pdf(paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
 if(n==2 & rank==4 & method=="ica"){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(4,2,1,2), yploti=c(1,3,3,4))
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(4,3,1,2), yploti=c(1,2,3,4))
 }else if(n==2 & rank==4 & method=="random"){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(3,1,2,1), yploti=c(2,4,4,3))
 }else if(n==3 & rank==3){
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,1), yploti=c(1,3))
 }else if(n==3 & rank==4){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,3,1), yploti=c(4,1,4,3))
+    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,4,2), yploti=c(4,1,3,1))
 }else{
     plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2))
 }
