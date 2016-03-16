@@ -12,6 +12,9 @@ spec <- "spectrum"
 r1 <- c("TCC.T", "ACC.T", "TCT.T", "CCC.T")
 r2 <- c("TCA.T", "ACA.T", "TCA.T", "CCA.T")
 
+r1 <- c("TCC.T", "ACC.T" )
+r2 <- c("ATA.C", "ATA.C" )
+
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
 
@@ -35,6 +38,7 @@ for(i in 1:length(ancient)){
     cmpnames <- sapply(adata[,1], reverse.complement)
     adata[,1] <- ifelse(adata[,1] %in% rownames(freq2), adata[,1], cmpnames)
     adata<-aggregate(adata[,2], by=list(adata[,1]), sum)
+    
     nm <- adata[,1]
     adata <- adata[,2]/sum(as.numeric(adata[,2]))
     names(adata) <- nm
@@ -43,6 +47,11 @@ for(i in 1:length(ancient)){
     names(logratio)[length(logratio)] <- ancientmap[i]
 }
 
+## plot(rowMeans(freq2)/sum(rowMeans(freq2)), adata)
+## abline(0,1, col="red")
+## identify(rowMeans(freq2)/sum(rowMeans(freq2)), adata, rownames(freq2))
+
+
 ## pdf(paste0("~/spectrum/plots/","Ratio_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), ".n", n, ".", r1, "-", r2, ".pdf"), 6, 6)
 aa <- ancientmap[ancient]
 names(aa) <- ancientmap[ancient]
@@ -50,7 +59,7 @@ regplot <- c(reg, aa)
 ro <-  c(  "Africa", "Oceania", "EastAsia",  "CentralAsiaSiberia", "America", "SouthAsia", "WestEurasia", "Loschbour" , "Stuttgart", "Ust' Ishim", "Neandertal", "Denisova")
 regplot <- factor(regplot,ro)
 cc <- c(cols[ro[1:7]], rep("black", 5))
-beeswarm(logratio~regplot[names(logratio)], cex.axis=0.5, las=2, col=cc, pch=16, cex=0.5, xlab="", ylab=expression("M"[2]), bty="n", ylim=c(-5, 15))
+beeswarm(logratio~regplot[names(logratio)], cex.axis=0.5, las=2, col=cc, pch=16, cex=0.5, xlab="", ylab=expression("M"[2]), bty="n")
 ## bxplot(logratio~regplot[names(logratio)], add = TRUE, col=c("grey", "black", "grey"), cex=0.5)             
 ## dev.off()
 

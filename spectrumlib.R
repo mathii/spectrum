@@ -52,13 +52,17 @@ plot.components <- function(components, name.map, src, cols="black", n.component
 }
 
 ## Plot factor loadings
-plot.loadings <- function(loadings, n.loadings=4){
+## Only rescale if the factor loadings are all positive, otherwise you might flip the sign
+plot.loadings <- function(loadings, n.loadings=4, rescale=TRUE){
     cols <- rep(c("#1EBFF0", "#000000", "#E62725", "#CBCACB", "#A1CF64", "#EDC8C5"), each=16)
     
     par(mfrow=c(n.loadings,1))
     for(i in 1:n.loadings){
-        plot(loadings[,i]/sum(loadings[,i]), col=cols, xaxt="n", bty="n", xlab=paste0("Component ", i ), ylab="Proportion of mutations", pch=16)
-        segments(1:NROW(loadings), 0, 1:NROW(loadings), loadings[,i]/sum(loadings[,i]), col=cols, lwd=2)
+        to.plot <- loadings[,i]
+        if(rescale & sum(loadings[,i])<=0){stop("Don't rescale loadings if not positive")}
+        if(rescale){to.plot <- loadings[,i]/sum(loadings[,i])} 
+        plot(to.plot , col=cols, xaxt="n", bty="n", xlab=paste0("Component ", i ), ylab="Proportion of mutations", pch=16)
+        segments(1:NROW(loadings), 0, 1:NROW(loadings),to.plot, col=cols, lwd=2)
         axis(1, at=1:NROW(loadings), labels=names(loadings[,i]), cex.axis=0.8, las=2)
     }
 }
