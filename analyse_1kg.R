@@ -8,10 +8,11 @@ cols<-cols[order(names(cols))]
 
 n <- 2
 
-exclude <- c("HG01149", "NA20582")
+exclude <- c("HG01149", "NA20582", "NA12275", "NA19728", "NA20540")
 
-sig1 <- c("TCT.T", "TCC.T", "CCC.T", "ACC.T")
-sig2 <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
+## Include reverse complements here because we don't rc when generating. 
+sig1 <- c("TCT.T", "TCC.T", "CCC.T", "ACC.T", "AGA.A", "GGA.A", "GGG.A", "GGT.A" )
+sig2 <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T", "CGT.A", "CGG.A", "CGC.A", "CGA.A" )
     
 chr <- 1
 data <- read.table(paste0("~/spectrum/1kg/chr", chr, ".n", n), header=T)
@@ -53,12 +54,12 @@ pm2 <- pop.means[,2]
 names(pm2) <- pop.means[,1]
 pm2 <- sort(pm2)
 
-pdf("~/spectrum/plots/1kg_sig1.pdf", width=12, height=4)
+pdf(paste0("~/spectrum/plots/1kg_sig1.","pdf"), width=12, height=4)
 par(mar=c(5.1,4.1,2.1,2.1))
 beeswarm(s1~pmap[names(s1)], pch=16, cex=0.3, col=cols, at=order(names(pm1)), xlab="Population", ylab="Signature 1", cex.axis=0.6)
 dev.off()
 
-pdf("~/spectrum/plots/1kg_sig2.pdf", width=12, height=4)
+pdf(paste0("~/spectrum/plots/1kg_sig2.", "pdf"), width=12, height=4)
 par(mar=c(5.1,4.1,2.1,2.1))
 beeswarm(s2~pmap[names(s2)], pch=16, cex=0.3, col=cols, at=order(names(pm2)), xlab="Population", ylab="Signature 2", cex.axis=0.6)
 dev.off()

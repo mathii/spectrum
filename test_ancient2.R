@@ -10,6 +10,7 @@ source("~/spectrum/code/spectrumlib.R")
 exclude.cell.lines <- FALSE
 n <- 2
 spec <- "spectrum"
+what.anc <- "het_sgdp_f1"
 
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
@@ -25,7 +26,7 @@ freq2 <- as.matrix(freq2)
 nc <- NCOL(freq2)
 
 for(i in 1:length(ancient)){
-    adata <- read.table(paste0("~/spectrum/ancient/", ancient[i], ".counts.txt"), as.is=TRUE, header=TRUE)
+    adata <- read.table(paste0("~/spectrum/ancient/", ancient[i], ".", what.anc, ".counts.txt"), as.is=TRUE, header=TRUE)
     cmpnames <- sapply(adata[,1], reverse.complement)
     adata[,1] <- ifelse(adata[,1] %in% rownames(freq2), adata[,1], cmpnames)
     adata<-aggregate(adata[,2], by=list(adata[,1]), sum)
@@ -50,9 +51,9 @@ names(asrc) <- ancientmap
 
 ppca<-predict(pca, t(freq2))
 
-## pdf(paste0("~/spectrum/plots/","Ancient_Components_PCA.n", n, tag, ".pdf"), 12, 12)
+pdf(paste0("~/spectrum/plots/","Ancient_Components.",what.anc,".PCA.n", n, tag, ".pdf"), 12, 12)
 plot.components(ppca, c(name.map, asrc) , c(src, asrc), cols=c(cols, acols) , n.components=5)
-## dev.off()
+dev.off()
 
 ## pdf(paste0("~/spectrum/plots/","Ancient_Loadings_PCA.n", n, tag, ".pdf"), width=12, height=12)
 ## plot.loadings(ppca$rotation, rescale=FALSE)
