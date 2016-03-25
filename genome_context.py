@@ -47,9 +47,9 @@ def main(options):
         chr_length=len(ref[chrom])
         for i in xrange(chr_length-options.k):
             tnc=ref[chrom][i:(i+options.k)].seq.upper()
-            if not hetfa and tnc in d:
+            if not options.hetfa and tnc in d:
                 d[tnc]+=1
-            elif hetfa and allowed_chars.match(seq):
+            elif options.hetfa and allowed_chars.match(seq):
                 c1="".join((BASE_MAP[x][0] for x in tnc))
                 c2="".join((BASE_MAP[x][1] for x in tnc))
                 d[tnc]+=1
