@@ -1,7 +1,7 @@
 #Get the distribution of trinucleotide contexts from a reference genome.
 
 from __future__ import division, print_function
-import argparse, sys, itertools, re, pdb
+import argparse, sys, itertools, re
 from pyfaidx import Fasta
 
 BASES=["A","C","G","T"]
@@ -16,7 +16,7 @@ def parse_options():
     parser=argparse.ArgumentParser()
     parser.add_argument('-r', '--ref', type=str, default="", help="reference fasta")
     parser.add_argument('-k', '--kmer', type=int, default=3, help="kmer to consider")
-    parser.add_argument('-h', '--hetfa', dest='hetfa', action='store_true')
+    parser.add_argument('-d', '--diploid', dest='hetfa', action='store_true', help="Input diploid fasta (\"hetfa\""))
     parser.set_defaults(hetfa=False)
 
     return parser.parse_args()
