@@ -16,7 +16,7 @@ def parse_options():
     parser=argparse.ArgumentParser()
     parser.add_argument('-r', '--ref', type=str, default="", help="reference fasta")
     parser.add_argument('-k', '--kmer', type=int, default=3, help="kmer to consider")
-    parser.add_argument('-d', '--diploid', dest='hetfa', action='store_true', help="Input diploid fasta (\"hetfa\""))
+    parser.add_argument('-d', '--diploid', dest='hetfa', action='store_true', help="Input diploid fasta (hetfa)")
     parser.set_defaults(hetfa=False)
 
     return parser.parse_args()
