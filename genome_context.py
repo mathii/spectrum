@@ -60,4 +60,5 @@ def main(options):
 ################################################################################
 
 options=parse_options()
+print(options, file=sys.stderr)
 main(options)
