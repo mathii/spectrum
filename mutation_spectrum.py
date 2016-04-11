@@ -149,7 +149,7 @@ def main(options):
                     skipped+=1
                     continue
                             
-            tnc=reference[chrom][(pos-2):(pos+1)].seq
+            tnc=reference[chrom][(pos-2):(pos+1)].seq.upper()
             if tnc[1]!=ref:
                 skipped+=1
                 continue
