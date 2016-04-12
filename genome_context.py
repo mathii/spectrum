@@ -41,7 +41,7 @@ def main(options):
     '''
     ref=Fasta(options.ref)
     d=make_dict(options.k)
-    allowed_chars=reg=re.compile( "^[ACGTMRWSYK]+$" )
+    allowed_chars=re.compile( "^[ACGTMRWSYK]+$" )
     for chrom in CHRS:
         print("chr"+chrom, file=sys.stderr)
         chr_length=len(ref[chrom])
