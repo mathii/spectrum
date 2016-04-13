@@ -13,7 +13,7 @@ if(length(cA)>1){
     exclude.cell.lines <- as.logical(as.numeric(cA[2]))
 }
 if(length(cA)>2){
-    wut <- paste0(".". cA[3])
+    wut <- paste0(".", cA[3])
 }
 
 
