@@ -3,7 +3,7 @@ library("RColorBrewer")
 
 exclude.cell.lines <- FALSE
 n <- 2
-tag <- ""
+tag <- wut <- ""
 
 cA <- commandArgs(TRUE)
 if(length(cA)>0){
@@ -12,6 +12,10 @@ if(length(cA)>0){
 if(length(cA)>1){
     exclude.cell.lines <- as.logical(as.numeric(cA[2]))
 }
+if(length(cA)>2){
+    wut <- paste0(".". cA[3])
+}
+
 
 reverse.complement <- function(str){
     mm <- c("A", "C", "G", "T")
@@ -48,13 +52,13 @@ names(name.map) <- info$ID
 src <- info[,6]
 names(src) <- info$ID
 
-raw <- read.table(paste0("~/spectrum/counts/chr1.n", n ,".txt"), as.is=TRUE, header=TRUE)
+raw <- read.table(paste0("~/spectrum/counts/chr1.n", n , wut, ".txt"), as.is=TRUE, header=TRUE)
 names(raw)<-gsub(".", "-", names(raw), fixed=TRUE)
 data <- data.matrix(raw[,2:NCOL(raw)])
 rownames(data) <- raw[,1]
 data <- data[order(rownames(data)),]
 for(chr in 2:22){
-    raw <- read.table(paste0("~/spectrum/counts/chr", chr, ".n", n, ".txt"), as.is=TRUE, header=TRUE)
+    raw <- read.table(paste0("~/spectrum/counts/chr", chr, ".n", n, wut, ".txt"), as.is=TRUE, header=TRUE)
     d <- data.matrix(raw[,2:NCOL(raw)])
     rownames(d) <- raw[,1]
     d <- d[order(rownames(d)),]
@@ -94,8 +98,8 @@ freqs2 <- data2/c(data2["ATA.C",])
 freqs2 <- as.matrix(freqs2)
 data2 <- as.matrix(data2)
 
-outname <- paste0("~/spectrum/data/spectrum_matrix.n", n, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
+outname <- paste0("~/spectrum/data/spectrum_matrix.n", n, wut, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
 write.table(freqs2, outname, col.names=TRUE, row.names=TRUE, quote=F)
 
-outname <- paste0("~/spectrum/data/count_matrix.n", n, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
+outname <- paste0("~/spectrum/data/count_matrix.n", n, wut, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
 write.table(data2, outname, col.names=TRUE, row.names=TRUE, quote=F)
