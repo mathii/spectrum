@@ -19,7 +19,7 @@ def parse_options():
     vcf: vcf input
     ref: 
     """
-    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf"=None }
+    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf":None }
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:a",
