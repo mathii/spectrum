@@ -184,11 +184,10 @@ def main(options):
                     
                 if[options["mpf"]]:
                     for hi in which_is_het:
-                        sample=results["samples"][hi]
-                        mpf_out.write(sample+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")
+                        mpf_out.write(results["samples"][hi]+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")
                     for hi in which_is_hom:
-                        mpf_out.write(sample+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")
-                        mpf_out.write(sample+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")                        
+                        mpf_out.write(results["samples"][hi]+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")
+                        mpf_out.write(results["samples"][hi]+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")                        
                     
     print("Skipped "+str(skipped)+"/"+str(line_i))
     print("Counted "+str(counted)+"/"+str(line_i))
