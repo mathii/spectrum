@@ -19,11 +19,11 @@ def parse_options():
     vcf: vcf input
     ref: 
     """
-    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False }
+    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf"=None }
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:c:p:a",
-                                    ["vcf", "ref", "ref_sample", "out", "count", "AA_INFO"])
+        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:a",
+                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "AA_INFO"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -34,6 +34,7 @@ def parse_options():
         elif o in ["-r","--ref"]:           options["ref"] = a
         elif o in ["-s","--ref_sample"]:    options["ref_sample"] = a
         elif o in ["-o","--out"]:           options["out"] = a
+        elif o in ["-m","--mpf"]:           options["mpf"] = a #Output mutation position format
         elif o in ["-c","--count"]:         options["count"] = int(a) #allele count of variants to include
         elif o in ["-a", "AA_INFO"]:        options["AA_INFO"]=True
 
@@ -71,7 +72,7 @@ def make_dict(N_samples):
 
 ##########################################################################################################
 
-def print_results(results):
+def print_results(results, options):
     out=open(options["out"], "w")
     out.write("Mutation\t"+"\t".join(results["samples"])+"\n")
     del(results["samples"])
@@ -88,6 +89,9 @@ def main(options):
     
     reference=Fasta(options["ref"])
     data=open2(options["vcf"])
+
+    if options["mpf"]:
+        mpf_out=open(options["mpf"])
 
     polarise_i=None
     results=None
@@ -178,9 +182,17 @@ def main(options):
                 else:
                     skipped+=1
                     
+                if[options["mpf"]]:
+                    for hi in which_is_het:
+                        sample=results["samples"][hi]
+                        mpf_out.write(sample+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")
+                    for hi in which_is_hom:
+                        mpf_out.write(sample+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")
+                        mpf_out.write(sample+"\tchr"+chrom+"\t"+pos+"\t"+anc+"\t"+mut+"\n")                        
+                    
     print("Skipped "+str(skipped)+"/"+str(line_i))
     print("Counted "+str(counted)+"/"+str(line_i))
-    print_results(results)
+    print_results(results, options)
                      
 ##########################################################################################################
 
