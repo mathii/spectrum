@@ -91,7 +91,7 @@ def main(options):
     data=open2(options["vcf"])
 
     if options["mpf"]:
-        mpf_out=open(options["mpf"])
+        mpf_out=open(options["mpf"], "r")
 
     polarise_i=None
     results=None
