@@ -8,13 +8,16 @@ exclude.cell.lines <- FALSE
 n <- 2
 rank <- 4
 spec <- "spectrum"
+what <- "ica_NMF"
+what <- "pmsignature"
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 
-dataname <- paste0("~/spectrum/plots/","Components_ica_NMF",  ifelse(spec=="spectrum", "", paste0(spec, "_")), ".n", n, ".r", rank, tag, ".txt")
+dataname <- paste0("~/spectrum/plots/","Components_", what,  ifelse(spec=="spectrum", "", paste0(spec, "_")), ".n", n, ".r", rank, tag, ".txt")
 data <- read.table(dataname, as.is=TRUE)
 rownames(data) <- data[,1]
 data <- data[,2:NCOL(data)]
 
+rownames(data) <- gsub("-", ".", rownames(data))
 rownames(info) <- gsub("-", ".", info$ID)
 lat <- info[rownames(data), "Latitude"]
 lon <- info[rownames(data), "Longitude"]
@@ -33,7 +36,7 @@ for(i in 1:NCOL(data)){
 
     find.interval <- function(x, breaks){max(which(breaks<x))}
 
-    oname <-  paste0("~/spectrum/plots/Map_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank,".c", i, tag, ".png")
+    oname <-  paste0("~/spectrum/plots/Map_", what, ifelse(spec=="spectrum", "", paste0(spec, "_")), "NMF.n", n, ".r", rank,".c", i, tag, ".png")
     png(oname, width=12, height=6, res=200, units="in")
     ## image(x=seq(-180,180, length.out=nxpix), y=seq(-150,150, length.out=nypix), res, ylim=c(-60,80), xlab="Longitude", ylab="Lattitude", col=pal, breaks=breaks)
     ## maps::map(database="world", fill=FALSE, add=TRUE, interior=FALSE, ylim=c(-60,80))
