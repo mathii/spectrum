@@ -61,7 +61,8 @@ def main(options):
                 minus[transcript[1]:transcript[2]]=True
 
         chrom_tx_strand = "".join(MAP[1*plus+2*minus])
-        print(textwrap.fill(chrom_tx_strand,40))
+        output=textwrap.fill(chrom_tx_strand,40)
+	print(output)
 
 ################################################################################
 
