@@ -23,8 +23,8 @@ def parse_options():
               "filter_file":None, "filter_values":() }
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:a",
-                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "AA_INFO"])
+        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:f:l:a",
+                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "filter_file", "filter_value", "AA_INFO"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -39,7 +39,7 @@ def parse_options():
         elif o in ["-c","--count"]:         options["count"] = int(a) #allele count of variants to include
         elif o in ["-a", "AA_INFO"]:        options["AA_INFO"]=True
         elif o in ["-f","--filter_file"]:   options["filter_file"] = a #Filter values according to this fasta file
-        elif o in ["-a","--filter_value"]:   options["filter_values"] = set(a.split(",")) #Include sites that match these values in the fasta
+        elif o in ["-l","--filter_value"]:  options["filter_values"] = set(a.split(",")) #Include sites that match these values in the fasta
         
     print( "found options:", file=sys.stderr)
     print( options, file=sys.stderr)
