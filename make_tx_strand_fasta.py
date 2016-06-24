@@ -60,7 +60,7 @@ def main(options):
             elif transcript[0]=="-":
                 minus[transcript[1]:transcript[2]]=True
 
-        chrom_tx_strand = "".join(MAP[1*x+2*y])
+        chrom_tx_strand = "".join(MAP[1*plus+2*minus])
         print(textwrap.fill(chrom_tx_strand,40))
 
 ################################################################################
