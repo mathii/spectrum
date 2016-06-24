@@ -9,6 +9,7 @@ of private mutations (i.e. singletons), in a trinucleotide context
 from __future__ import division, print_function
 from pyfaidx import Fasta
 import sys, getopt, gzip
+from __builtin__ import None
 
 BASES=["A", "C", "G", "T"]
 
@@ -19,7 +20,8 @@ def parse_options():
     vcf: vcf input
     ref: 
     """
-    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf":None }
+    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf":None,
+              "filter_file":None, "filter_values":() }
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:a",
@@ -37,7 +39,9 @@ def parse_options():
         elif o in ["-m","--mpf"]:           options["mpf"] = a #Output mutation position format
         elif o in ["-c","--count"]:         options["count"] = int(a) #allele count of variants to include
         elif o in ["-a", "AA_INFO"]:        options["AA_INFO"]=True
-
+        elif o in ["-f","--filter_file"]:   options["filter_file"] = a #Filter values according to this fasta file
+        elif o in ["-a","--filter_value"]:   options["filter_values"] = set(a.split(",")) #Include sites that match these values in the fasta
+        
     print( "found options:", file=sys.stderr)
     print( options, file=sys.stderr)
 
@@ -90,6 +94,10 @@ def main(options):
     reference=Fasta(options["ref"])
     data=open2(options["vcf"])
 
+    filter=None
+    if(options["filter_file"]):
+        filter=Fasta(options["filter_file"])
+
     if options["mpf"]:
         mpf_out=open(options["mpf"], "w")
 
@@ -122,8 +130,11 @@ def main(options):
             hetgts=["01", "10"]
             mutgt="11"
             
-            if len(anc)>1 or len(ref)>1:
+            if len(anc)>1 or len(ref)>1: #Only include bialleleic SNPs
                 continue
+            
+            if filter and filter[chrom][pos-1] not in options["filter_values"]:
+                continue 
 
             if options["AA_INFO"]:
                 info=bits[7]
