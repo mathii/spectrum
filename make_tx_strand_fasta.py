@@ -50,6 +50,7 @@ def main(options):
     transcripts=read_strand_file(options.strand)
     ref=Fasta(options.ref)
     for chrom in ref.keys():
+        print(chrom, file=sys.stderr)
         if chrom[:3]=="chr":
             print(">"+chrom)
         else:
@@ -58,7 +59,7 @@ def main(options):
         minus=np.array([False]*len(ref[chrom]))
 
         for transcript in transcripts[chrom]:
-            if transccipt[0]=="+":
+            if transcript[0]=="+":
                 plus[transcript[1]:transcript[2]]=True
             elif transcript[0]=="-":
                 minus[transcript[1]:transcript[2]]=True
