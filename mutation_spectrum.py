@@ -9,7 +9,6 @@ of private mutations (i.e. singletons), in a trinucleotide context
 from __future__ import division, print_function
 from pyfaidx import Fasta
 import sys, getopt, gzip
-from __builtin__ import None
 
 BASES=["A", "C", "G", "T"]
 
