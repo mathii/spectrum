@@ -1,7 +1,7 @@
 #Make a fasta file that includes transcriptional strand
 #Writes the fasta with +|-|*|N for transribed on positive, negative, both or neither strand. 
 from __future__ import division, print_function
-import argparse, re, sys, gzip
+import argparse, re, sys, gzip, textwrap
 from pyfaidx import Fasta
 from collections import defaultdict
 import numpy as np 
