@@ -40,7 +40,7 @@ def read_strand_file(strand_file):
     transcripts=defaultdict(list)
     for row in sfile:
         bits=row.split()
-        transcripts[bits[1]].append(bits[2:5])
+        transcripts[bits[1]].append([bits[2]]+[int(x) for x in bits[3:5]])
     
     return transcripts
     
@@ -51,22 +51,26 @@ def main(options):
     ref=Fasta(options.ref)
     for chrom in ref.keys():
         print(chrom, file=sys.stderr)
-        if chrom[:3]=="chr":
-            print(">"+chrom)
-        else:
-            print(">chr"+chrom)
+        print(">"+chrom)
+
         plus=np.array([False]*len(ref[chrom]))
         minus=np.array([False]*len(ref[chrom]))
 
-        for transcript in transcripts[chrom]:
+	ti=0
+        for transcript in transcripts["chr"+chrom]:
+            if not ti % 1000:
+                print("\r"+chrom+":trans"+str(ti), file=sys.stderr)
             if transcript[0]=="+":
                 plus[transcript[1]:transcript[2]]=True
             elif transcript[0]=="-":
                 minus[transcript[1]:transcript[2]]=True
+            ti+=1
 
+        print(chrom+":writing", file=sys.stderr)
         chrom_tx_strand = "".join(MAP[1*plus+2*minus])
-        output=textwrap.fill(chrom_tx_strand,40)
-	print(output)
+        #output=textwrap.fill(chrom_tx_strand,40)
+	print(chrom_tx_strand)
+        print(chrom+":done", file=sys.stderr)
 
 ################################################################################
 

@@ -131,8 +131,8 @@ def main(options):
             
             if len(anc)>1 or len(ref)>1: #Only include bialleleic SNPs
                 continue
-            
-            if filter and filter[chrom][pos-1] not in options["filter_values"]:
+
+            if filter and filter[chrom][pos-1].seq not in options["filter_values"]:
                 continue 
 
             if options["AA_INFO"]:
@@ -192,7 +192,7 @@ def main(options):
                 else:
                     skipped+=1
                     
-                if[options["mpf"]]:
+                if options["mpf"]:
                     for hi in which_is_het:
                         if hi!=polarise_i:
                             mpf_out.write(results["samples"][hi]+"\tchr"+chrom+"\t"+str(pos)+"\t"+anc+"\t"+mut+"\n")

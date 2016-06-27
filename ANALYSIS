@@ -25,6 +25,31 @@ done
 
 for chr in {1..22}
 do
+for b in {0..9}
+do
+bsub -q reich -W12:00 "python code/mutation_spectrum.py \
+-v /groups/reich/iain/spectrum_sgdp/cteam_extended.v4.chr${chr}.vcf.gz \
+-r /groups/reich/reference-genomes/hs37d5/unzipped/hs37d5.fa \
+-s panTro2 -c 2 -o ~/spectrum/Bstat/chr${chr}.n2.b${b}.txt \
+-f /groups/reich/nick/broaddata/neander/analysis1/bstat_decile_hg19.fa -l $b"
+done
+done
+
+for chr in {1..22}
+do
+for b in - +
+do
+bsub -q reich -W12:00 "python code/mutation_spectrum.py \
+-v /groups/reich/iain/spectrum_sgdp/cteam_extended.v4.chr${chr}.vcf.gz \
+-r /groups/reich/reference-genomes/hs37d5/unzipped/hs37d5.fa \
+-s panTro2 -c 2 -o ~/spectrum/strand/chr${chr}.n2.strand${b}.txt \
+-f /home/im60/spectrum/strand/hs37d5.UCSC_TxStrand.fa -l $b"
+done
+done
+
+
+for chr in {1..22}
+do
 for n in {1..4}
 do
 bsub -q short -W12:00 "python code/mutation_spectrum.py \
