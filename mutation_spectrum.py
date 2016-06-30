@@ -9,6 +9,7 @@ of private mutations (i.e. singletons), in a trinucleotide context
 from __future__ import division, print_function
 from pyfaidx import Fasta
 import sys, getopt, gzip
+from collections import defaultdict
 
 BASES=["A", "C", "G", "T"]
 
@@ -20,7 +21,7 @@ def parse_options():
     ref: 
     """
     options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf":None,
-              "filter_file":None, "filter_values":() }
+              "filter_file":None, "filter_values":(), "filter_list":None }
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:f:l:a",
@@ -40,6 +41,7 @@ def parse_options():
         elif o in ["-a", "AA_INFO"]:        options["AA_INFO"]=True
         elif o in ["-f","--filter_file"]:   options["filter_file"] = a #Filter values according to this fasta file
         elif o in ["-l","--filter_value"]:  options["filter_values"] = set(a.split(",")) #Include sites that match these values in the fasta
+        elif o in ["-i","--filter_list"]:   options["filter_list"] = a #A file containing a specific list of sites to include chr/pos
         
     print( "found options:", file=sys.stderr)
     print( options, file=sys.stderr)
@@ -75,6 +77,23 @@ def make_dict(N_samples):
 
 ##########################################################################################################
 
+def read_filter_list(filter_list_file):
+    """
+    Two columns, chrom, pos of sites that should be included. 
+    """
+    filter_list=defaultdict(set)
+    
+    list_file=open2(filter_list_file, "r")
+    for line in list_file:
+        if line[0]=="#":
+            continue
+        bits=line.split()
+        filter[bits[0]].append(int(bits[1]))
+    
+    return filter_list
+
+##########################################################################################################
+
 def print_results(results, options):
     out=open(options["out"], "w")
     out.write("Mutation\t"+"\t".join(results["samples"])+"\n")
@@ -94,8 +113,12 @@ def main(options):
     data=open2(options["vcf"])
 
     filter=None
-    if(options["filter_file"]):
+    if options["filter_file"]:
         filter=Fasta(options["filter_file"])
+
+    filter_list=None
+    if options["filter_list"]:
+        filter_list=read_filter_list(options.filter_list_file)
 
     if options["mpf"]:
         mpf_out=open(options["mpf"], "w")
@@ -134,6 +157,9 @@ def main(options):
 
             if filter and filter[chrom][pos-1].seq not in options["filter_values"]:
                 continue 
+
+            if filter_list and pos not in filter_list[chrom]:
+                continue
 
             if options["AA_INFO"]:
                 info=bits[7]
