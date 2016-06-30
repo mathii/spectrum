@@ -24,8 +24,8 @@ def parse_options():
               "filter_file":None, "filter_values":(), "filter_list":None }
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:f:l:a",
-                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "filter_file", "filter_value", "AA_INFO"])
+        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:f:l:i:a",
+                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "filter_file", "filter_value", "filter_list", "AA_INFO"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -88,7 +88,7 @@ def read_filter_list(filter_list_file):
         if line[0]=="#":
             continue
         bits=line.split()
-        filter[bits[0]].append(int(bits[1]))
+        filter_list[bits[0]].add(int(bits[1]))
     
     return filter_list
 
@@ -118,7 +118,7 @@ def main(options):
 
     filter_list=None
     if options["filter_list"]:
-        filter_list=read_filter_list(options.filter_list_file)
+        filter_list=read_filter_list(options["filter_list"])
 
     if options["mpf"]:
         mpf_out=open(options["mpf"], "w")
