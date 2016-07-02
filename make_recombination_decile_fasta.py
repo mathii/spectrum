@@ -4,14 +4,13 @@ from __future__ import division, print_function
 import argparse, re, sys, gzip
 from pyfaidx import Fasta
 from collections import defaultdict
-from itertools import chain
+from itertools import chain, izip
 from scipy import interpolate
 import numpy as np 
-import pdb
 
 BASES=np.array(["a", "c", "g", "t", "A", "C", "G", "T"])
 AUTOSOMES=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-           "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"]
+           "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"]
 
 
 ################################################################################
@@ -101,34 +100,35 @@ def main(options):
         while options.block *(i+1) < chrlen:
             r_rate=rec_map.distance(i, options.block*(i+1))
             blocks[chrom].append(r_rate)
+            i=i+1
         
         #Last chunk
         last_chunk_start=options.block *(i+1)
         last_chunk_end=chrlen
         r_rate=rec_map.distance(last_chunk_start, last_chunk_end)
-        r_rate=r_rate*options.block/(last_chunk_start-last_chunk_end)
+        r_rate=r_rate*options.block/(last_chunk_end-last_chunk_start)
         blocks[chrom].append(r_rate)
         blocks[chrom]=np.array(blocks[chrom])
-        
-    all_rates=np.array(chain(*blocks.values()))
+
+    all_rates=np.array([x for x in chain(*blocks.values())])
     quantiles=np.percentile(all_rates, 10*np.array(range(1,11)))
     quantile_blocks={}
-    for k,v in blocks:
+    for k,v in blocks.iteritems():
         quantile_blocks[k]=np.searchsorted(quantiles, v)
         
     #Write out result
     for chrom in AUTOSOMES:
         print(">"+chrom)
-        seq=ref[chrom].seq
-        quantile_chr=[str(x)*options.block for x in quantile_blocks[chrom]]
+        seq=ref[chrom][:].seq
+        quantile_chr="".join([str(x)*options.block for x in quantile_blocks[chrom]])
         quantile_chr=quantile_chr[:len(seq)]
-        out_qsec="".join([q if x in BASES else "N" for x,q in zip(seq, quantile_chr)])
+        out_qsec="".join([q if x in BASES else "N" for x,q in izip(seq, quantile_chr)])
         print(out_qsec)
         
         
     
 ################################################################################
 
-if __name__=="main":
+if __name__=="__main__":
     options=parse_options()
     main(options)

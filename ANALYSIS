@@ -38,6 +38,20 @@ bsub -q reich -W12:00 "python code/mutation_spectrum.py \
 done
 done
 
+#Spectrum vs recombination rate. 
+for chr in {1..22}
+do
+for b in {0..9}
+do
+bsub -q short -W12:00 "python ~/spectrum/code/mutation_spectrum.py \
+-v /groups/reich/iain/spectrum_sgdp/cteam_extended.v4.chr${chr}.vcf.gz \
+-r /groups/reich/reference-genomes/hs37d5/unzipped/hs37d5.fa \
+-s panTro2 -c 2 -o ~/spectrum/rrate/chr${chr}.n2.b${b}.txt \
+-f /groups/reich/groups/reich/iain/data_fastas/hs37d5.RRate_decile.fa -l $b"
+done
+done
+
+
 #Spectrum vs strand
 for chr in {1..22}
 do
@@ -59,7 +73,7 @@ do
 bsub -q short -W12:00 "python ~/spectrum/code/mutation_spectrum.py \
 -v /groups/reich/iain/spectrum_sgdp/cteam_extended.v4.chr${chr}.vcf.gz \
 -r /groups/reich/reference-genomes/hs37d5/unzipped/hs37d5.fa \
--s panTro2 -c 2 -o ~/spectrum/strand/chr${chr}.n2.methyl_${ms}50.txt \
+-s panTro2 -c 2 -o ~/spectrum/methyl/chr${chr}.n2.methyl_${ms}50.txt \
 -i ~/spectrum/methyl/BC_Testis_both.${ms}50.txt.gz"
 done
 done
