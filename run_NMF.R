@@ -35,6 +35,9 @@ if(length(cA)>4){
 if(length(cA)>5){
     subtract <- as.logical(as.numeric(cA[6]))
 }
+if(length(cA)>6){
+    spec <- cA[7]
+}
 
 
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
@@ -46,6 +49,8 @@ freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 
 if(subtract){
     freq2 <- freq2-apply(freq2, 1, min)
+}
+if(subtract & spec=="spectrum"){
     freq2["ATA.C",] <- 0.00001         #Null row.
 }
 ## freq2 <- t(t(freq2)/colSums(freq2))
@@ -53,25 +58,33 @@ if(subtract){
 ## Non-negative Matrix factorization
 seed <- ifelse(method=="random", rep(123456, 6), method)
 
-outtag <-  paste0(ifelse(spec=="spectrum", "", spec), ifelse(subtract, "_subtract", ""), "_", method)
+outtag <-  paste0(ifelse(spec=="spectrum", "", paste0("_", spec)), ifelse(subtract, "_subtract", ""), "_", method)
 
 logfile <- paste0("~/spectrum/plots/","Info",  outtag, "_NMF.n", n, ".r", rank, tag, ".log")
 
 if(!diagnostics){
 cat(paste0("ARGS: ", cA, "\n"), file=logfile)
 nnegmf <- nmf(as.matrix(freq2),rank=rank, nrun=200, seed = seed )
-    
+
+coeff <- t(coef(nnegmf))
+
+if(spec=="count"){
+    coeff <- coeff/rowSums(coeff)
+}
+
 pdf(paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
-if(n==2 & rank==4 & method=="ica"){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(4,3,1,2), yploti=c(1,2,3,4))
+if(n==2 & rank==4 & method=="ica" & spec=="totalnorm"){
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,3,3), yploti=c(4,1,4,2))
+}else if(n==2 & rank==4 & method=="ica"){
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(4,3,1,2), yploti=c(1,2,3,4))
 }else if(n==2 & rank==4 & method=="random"){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(3,4,2,1), yploti=c(2,1,4,3))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(3,4,2,1), yploti=c(2,1,4,3))
 }else if(n==3 & rank==3){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,2), yploti=c(3,1))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,2), yploti=c(3,1))
 }else if(n==3 & rank==4){
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,4,2), yploti=c(4,1,3,1))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,4,2), yploti=c(4,1,3,1))
 }else{
-    plot.components(t(coef(nnegmf)), name.map, src, cols=cols, n.components=rank, layout=c(2,2))
+    plot.components(t(coeff), name.map, src, cols=cols, n.components=rank, layout=c(2,2))
 }
 dev.off()
 
@@ -93,7 +106,7 @@ pdf(paste0("~/spectrum/plots/","Loadings", outtag,"_NMF.n", n, ".r", rank, tag, 
 plot.loadings(bas/scale, n.loadings=rank)
 dev.off()
 
-write.table(t(coef(nnegmf)), paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
+write.table(coeff, paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
 write.table(bas/scale, paste0("~/spectrum/plots/","Loadings",  outtag, "_NMF.n", n, ".r", rank, tag, ".txt"), row.names=T, col.names=F, quote=F) 
 
 features <- lapply(extractFeatures(nnegmf), function(x){rownames(freq2)[x]})

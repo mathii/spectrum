@@ -21,11 +21,11 @@ def parse_options():
     ref: 
     """
     options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf":None,
-              "filter_file":None, "filter_values":(), "filter_list":None }
+              "filter_file":None, "filter_values":(), "filter_list":None, "pos_out":None }
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:f:l:i:a",
-                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "filter_file", "filter_value", "filter_list", "AA_INFO"])
+                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "filter_file", "filter_value", "filter_list", "AA_INFO"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -37,6 +37,7 @@ def parse_options():
         elif o in ["-s","--ref_sample"]:    options["ref_sample"] = a
         elif o in ["-o","--out"]:           options["out"] = a
         elif o in ["-m","--mpf"]:           options["mpf"] = a #Output mutation position format
+        elif o in ["-p","--pos_out"]:       options["pos_out"] = a #Output position format with all variants and contex. 
         elif o in ["-c","--count"]:         options["count"] = int(a) #allele count of variants to include
         elif o in ["-a", "AA_INFO"]:        options["AA_INFO"]=True
         elif o in ["-f","--filter_file"]:   options["filter_file"] = a #Filter values according to this fasta file
@@ -122,6 +123,9 @@ def main(options):
 
     if options["mpf"]:
         mpf_out=open(options["mpf"], "w")
+
+    if options["pos_out"]:
+        pos_out=open(options["pos_out"], "w")
 
     polarise_i=None
     results=None
@@ -217,6 +221,9 @@ def main(options):
                         results[key][igt]+=2
                 else:
                     skipped+=1
+                    
+                if options["pos_out"]:
+                    pos_out.write(chrom+"\t"+str(pos)+"\t"+tnc+"."+mut)
                     
                 if options["mpf"]:
                     for hi in which_is_het:
