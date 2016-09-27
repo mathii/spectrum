@@ -20,9 +20,9 @@ inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
 
 freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 ## Exclude ancient samples for this analysis
-ancient <- c("Altai", "Denisova", "Loschbour", "LBK", "UstIshim")
+ancient <- c("Altai", "Denisova", "Loschbour", "LBK", "UstIshim", "Vindija")
 
-ancientmap <- c("Neandertal", "Denisova", "Loschbour", "Stuttgart", "Ust' Ishim")
+ancientmap <- c("Altai Neandertal", "Denisova", "Loschbour", "Stuttgart", "Ust' Ishim", "Vindija Neandertal")
 names(ancientmap) <- ancient
 
 freq2 <- as.matrix(freq2)
@@ -78,11 +78,11 @@ pdf(paste0("~/spectrum/plots/","Corrected_",  ifelse(spec=="spectrum", "", paste
 aa <- ancientmap[ancient]
 names(aa) <- ancientmap[ancient]
 regplot <- c(reg, aa)
-anc.ro <- c( "Loschbour" , "Stuttgart", "Ust' Ishim", "Neandertal", "Denisova" )
+anc.ro <- c( "Loschbour" , "Stuttgart", "Ust' Ishim", "Altai Neandertal", "Vindija Neandertal", "Denisova" )
 mod.ro <-  c(  "Africa", "Oceania", "EastAsia",  "CentralAsiaSiberia", "America", "SouthAsia", "WestEurasia")
 ro <- c(mod.ro ,anc.ro)
 regplot <- factor(regplot,ro)
-cc <- c(cols[ro[1:7]], rep("black", 5))
+cc <- c(cols[ro[1:7]], rep("black", length(ancient)))
 beeswarm(logratio~regplot[names(logratio)], cex.axis=0.6, las=2, col=cc, pch=16, cex=0.7, xlab="", ylab=expression("M"[2]), bty="n")
 
 for(i in 1:length(anc.ro)){
