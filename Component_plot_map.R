@@ -9,7 +9,7 @@ n <- 2
 rank <- 4
 spec <- "spectrum"
 what <- "ica_NMF"
-what <- "pmsignature"
+## what <- "pmsignature"
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 
 dataname <- paste0("~/spectrum/plots/","Components_", what,  ifelse(spec=="spectrum", "", paste0(spec, "_")), ".n", n, ".r", rank, tag, ".txt")
@@ -43,7 +43,7 @@ for(i in 1:NCOL(data)){
     maps::map(database="world", fill=FALSE, add=FALSE, interior=FALSE, ylim=c(-60,80))
     points(jitter(lon,100), jitter(lat,100), pch=21, bg=paste0(pal[sapply(data[,i], find.interval, breaks=breaks)]), cex=1.5)
     dev.off()
-}
+Ci}
 
 ## png(paste0("~/cteam/spectrum/Negative_map.png"), width=12, height=6, res=200, units="in")
 ## image(x=seq(-180,180, length.out=nxpix), y=seq(-150,150, length.out=nypix), 0*res, ylim=c(-60,80), xlab="Longitude", ylab="Lattitude", col=c("white"), breaks=c(-1,1))
