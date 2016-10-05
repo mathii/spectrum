@@ -94,12 +94,17 @@ names(amap) <- alex[,1]
 rownames(data2)<-amap[rownames(data2)]
 data2<-data2[amap,]
 freqs2 <- data2/c(data2["ATA.C",])
+freqs3 <- t(t(data2)/colSums(data2))
 
 freqs2 <- as.matrix(freqs2)
 data2 <- as.matrix(data2)
+
 
 outname <- paste0("~/spectrum/data/spectrum_matrix.n", n, wut, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
 write.table(freqs2, outname, col.names=TRUE, row.names=TRUE, quote=F)
 
 outname <- paste0("~/spectrum/data/count_matrix.n", n, wut, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
 write.table(data2, outname, col.names=TRUE, row.names=TRUE, quote=F)
+
+outname <- paste0("~/spectrum/data/totalnorm_matrix.n", n, wut, ifelse(exclude.cell.lines, ".NoCellLines", ""), ".txt")
+write.table(freqs3, outname, col.names=TRUE, row.names=TRUE, quote=F)

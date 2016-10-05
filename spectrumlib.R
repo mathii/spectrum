@@ -45,7 +45,7 @@ plot.components <- function(components, name.map, src, cols="black", n.component
     }
     
     for(i in 1:length(xploti)){
-        plot(components[,xploti[i]], components[,yploti[i]], col=cols[name.map[rownames(components)]],, xlab=paste0("PCA", xploti[i]), ylab=paste0("PCA", yploti[i]), pch=ifelse(src[rownames(components)]=="Genomic_from_cell_lines", 13, 1), xaxt="n", yaxt="n")
+        plot(components[,xploti[i]], components[,yploti[i]], col=cols[name.map[rownames(components)]],, xlab=paste0("Component ", xploti[i]), ylab=paste0("Component ", yploti[i]), pch=ifelse(src[rownames(components)]=="Genomic_from_cell_lines", 13, 1), xaxt="n", yaxt="n")
         legend("topleft", c("Cell lines", "Other"), pch=c(13,1), bty="n")
         legend("topright", names(cols), col=cols, bty="n", pch=16)
     }

@@ -9,6 +9,7 @@ of private mutations (i.e. singletons), in a trinucleotide context
 from __future__ import division, print_function
 from pyfaidx import Fasta
 import sys, getopt, gzip
+from collections import defaultdict
 
 BASES=["A", "C", "G", "T"]
 
@@ -19,11 +20,12 @@ def parse_options():
     vcf: vcf input
     ref: 
     """
-    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False }
+    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf":None,
+              "filter_file":None, "filter_values":(), "filter_list":None, "pos_out":None }
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:c:p:a",
-                                    ["vcf", "ref", "ref_sample", "out", "count", "AA_INFO"])
+        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:f:l:i:a",
+                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "filter_file", "filter_value", "filter_list", "AA_INFO"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -34,9 +36,14 @@ def parse_options():
         elif o in ["-r","--ref"]:           options["ref"] = a
         elif o in ["-s","--ref_sample"]:    options["ref_sample"] = a
         elif o in ["-o","--out"]:           options["out"] = a
+        elif o in ["-m","--mpf"]:           options["mpf"] = a #Output mutation position format
+        elif o in ["-p","--pos_out"]:       options["pos_out"] = a #Output position format with all variants and contex. 
         elif o in ["-c","--count"]:         options["count"] = int(a) #allele count of variants to include
         elif o in ["-a", "AA_INFO"]:        options["AA_INFO"]=True
-
+        elif o in ["-f","--filter_file"]:   options["filter_file"] = a #Filter values according to this fasta file
+        elif o in ["-l","--filter_value"]:  options["filter_values"] = set(a.split(",")) #Include sites that match these values in the fasta
+        elif o in ["-i","--filter_list"]:   options["filter_list"] = a #A file containing a specific list of sites to include chr/pos
+        
     print( "found options:", file=sys.stderr)
     print( options, file=sys.stderr)
 
@@ -71,7 +78,24 @@ def make_dict(N_samples):
 
 ##########################################################################################################
 
-def print_results(results):
+def read_filter_list(filter_list_file):
+    """
+    Two columns, chrom, pos of sites that should be included. 
+    """
+    filter_list=defaultdict(set)
+    
+    list_file=open2(filter_list_file, "r")
+    for line in list_file:
+        if line[0]=="#":
+            continue
+        bits=line.split()
+        filter_list[bits[0]].add(int(bits[1]))
+    
+    return filter_list
+
+##########################################################################################################
+
+def print_results(results, options):
     out=open(options["out"], "w")
     out.write("Mutation\t"+"\t".join(results["samples"])+"\n")
     del(results["samples"])
@@ -88,6 +112,20 @@ def main(options):
     
     reference=Fasta(options["ref"])
     data=open2(options["vcf"])
+
+    filter=None
+    if options["filter_file"]:
+        filter=Fasta(options["filter_file"])
+
+    filter_list=None
+    if options["filter_list"]:
+        filter_list=read_filter_list(options["filter_list"])
+
+    if options["mpf"]:
+        mpf_out=open(options["mpf"], "w")
+
+    if options["pos_out"]:
+        pos_out=open(options["pos_out"], "w")
 
     polarise_i=None
     results=None
@@ -118,7 +156,13 @@ def main(options):
             hetgts=["01", "10"]
             mutgt="11"
             
-            if len(anc)>1 or len(ref)>1:
+            if len(anc)>1 or len(ref)>1: #Only include bialleleic SNPs
+                continue
+
+            if filter and filter[chrom][pos-1].seq not in options["filter_values"]:
+                continue 
+
+            if filter_list and pos not in filter_list[chrom]:
                 continue
 
             if options["AA_INFO"]:
@@ -178,9 +222,21 @@ def main(options):
                 else:
                     skipped+=1
                     
+                if options["pos_out"]:
+                    pos_out.write(chrom+"\t"+str(pos)+"\t"+tnc+"."+mut)
+                    
+                if options["mpf"]:
+                    for hi in which_is_het:
+                        if hi!=polarise_i:
+                            mpf_out.write(results["samples"][hi]+"\tchr"+chrom+"\t"+str(pos)+"\t"+anc+"\t"+mut+"\n")
+                    for hi in which_is_hom:
+                        if hi!=polarise_i:
+                            mpf_out.write(results["samples"][hi]+"\tchr"+chrom+"\t"+str(pos)+"\t"+anc+"\t"+mut+"\n")
+                            mpf_out.write(results["samples"][hi]+"\tchr"+chrom+"\t"+str(pos)+"\t"+anc+"\t"+mut+"\n")                        
+                    
     print("Skipped "+str(skipped)+"/"+str(line_i))
     print("Counted "+str(counted)+"/"+str(line_i))
-    print_results(results)
+    print_results(results, options)
                      
 ##########################################################################################################
 
