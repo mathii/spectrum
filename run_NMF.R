@@ -9,10 +9,10 @@ source("~/spectrum/code/spectrumlib.R")
 
 spec <- "spectrum"
 
-exclude.cell.lines <- FALSE
 n <- 2
 rank <- 4
-method <- "random"
+tag <- ""
+method <- "ica"
 diagnostics <- FALSE
 subtract <- FALSE
 
@@ -24,7 +24,7 @@ if(length(cA)>1){
     rank <- as.numeric(cA[2])
 }
 if(length(cA)>2){
-    exclude.cell.lines <- as.logical(as.numeric(cA[3]))
+    tag <- paste0(".", cA[3])
 }
 if(length(cA)>3){
     diagnostics <- as.logical(as.numeric(cA[4]))
@@ -40,7 +40,6 @@ if(length(cA)>6){
 }
 
 
-tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
 
 freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
