@@ -64,3 +64,9 @@ par(mar=c(5.1,4.1,2.1,2.1))
 beeswarm(s2~pmap[names(s2)], pch=16, cex=0.3, col=cols, at=order(names(pm2)), xlab="Population", ylab="Signature 2", cex.axis=0.6)
 dev.off()
 
+s1.inc<-c("GBR", "TSI", "FIN", "IBS", "CEU", "PJL", "BEB", "STU", "ITU", "GIH")
+t.test(s1[pmap[names(s1)]%in%s1.inc], s1[!(pmap[names(s1)] %in% s1.inc)])
+
+s2.inc<-c("PEL", "MXL")
+t.test(s2[pmap[names(s2)]%in%s2.inc], s2[!(pmap[names(s2)] %in% s2.inc)])
+

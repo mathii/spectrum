@@ -4,14 +4,20 @@ source("~/spectrum/code/spectrumlib.R")
 
 ####################################################
 
-## sig <- "1"
-## regions.to.include <- c("SouthAsia", "WestEurasia")
+## sig.name <- "1"
+## regions.to.include <- c( "WestEurasia", "EastAsia")
+## regions.to.include.all <- c()
+## sig <- c("TCC.T", "ACC.T", "TCT.T", "CCC.T")
+## sig.rc <- c("GGA.A", "GGT.A", "AGA.A", "GGG.A" )
 
 sig.name <- "2"
 regions.to.include <- c("America", "EastAsia")
+regions.to.include.all <- c("America", "EastAsia")
+
 ## regions.to.include <- c("EastAsia","WestEurasia","America","Oceania","SouthAsia","CentralAsiaSiberia")
 sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
 sig.rc <- c("CGT.A", "CGG.A", "CGC.A", "CGA.A" )
+
 ####################################################
 
 sig.name.map <- c(4,1)
@@ -52,11 +58,11 @@ all.med <- all.med[names(sig.med)]
 components<-read.table("~/spectrum/plots/Components_ica_NMF.n2.r4.txt", as.is=TRUE)
 rownames(components) <- gsub(".", "-", components[,1], fixed=TRUE)
 components <- components[2:NCOL(components)]
-comp <- components[names(sig.med),sig.name.map[sig]]
+comp <- components[names(sig.med),sig.name.map[sig.name]]
 
 inc <- reg[names(sig.med)] %in% regions.to.include
 
-plot(comp[inc], sig.med[inc], col=cols[reg[names(sig.med[inc])]], xlab=paste0("Signature ", sig.name, " loading"), ylab="Median f2 age (generations)")
+## plot(comp[inc], sig.med[inc], col=cols[reg[names(sig.med[inc])]], xlab=paste0("Signature ", sig.name, " loading"), ylab="Median f2 age (generations)")
 
 spec="spectrum"
 n <- 2
@@ -68,7 +74,26 @@ ff <- colSums(freq[c(sig),])
 names(ff) <- gsub(".", "-", names(ff), fixed=TRUE)
 ff <- ff[names(sig.med)]
 
+lab <- c()
+xlim <- c(0.14, 0.24)
+ylim <- c(0,500)
+if(sig.name=="2"){
+    laby <- c(4,5,76)
+    xlim <- c(0.14, 0.24)
+    ylim <- c(0,500)
+}
+if(sig.name=="1"){
+    laby <- c()    
+    xlim <- c(0.06, 0.12)
+    ylim <- c(0,500)
+}
+
 pdf(paste0("~/spectrum/plots/f2_age_sig", sig.name, ".pdf"))
-plot(ff[inc], sig.med[inc], col=cols[reg[names(sig.med[inc])]], xlab=paste0("Proportion of signature ", sig.name, " f2 mutations"), ylab="Median age of signature 2 mutations (generations)", pch=16)
-legend("bottomright", c("America", "East Asia"), col=c("#984EA3" , "#E41A1C" ), pch=16, bty="n") 
+plot(ff[inc], sig.med[inc], col=cols[reg[names(sig.med[inc])]], xlab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations"), ylab=bquote("Median age of signature"~.(sig.name)~f[2]~"mutations (generations)"), pch=16, xlim=xlim, ylim=ylim, bty="n")
+if(length(regions.to.include.all)){
+    inc2 <- reg[names(sig.med)] %in% regions.to.include.all
+    points(ff[inc2], all.med[inc2], col=cols[reg[names(sig.med[inc2])]], pch=1)
+}
+legend("bottomright", c(regions.to.include, paste0(regions.to.include.all, " (all f2 variants)")), col=c(cols[regions.to.include],cols[regions.to.include.all]), pch=c(rep(16, length(regions.to.include)), rep(1, length(regions.to.include.all))), bty="n") 
+text(ff[inc][laby], sig.med[inc][laby], names(sig.med[inc])[laby], pos=4, cex=0.5)
 dev.off()
