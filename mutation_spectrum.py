@@ -252,7 +252,7 @@ def main(options):
                     skipped+=1
                     
                 if options["pos_out"]:
-                    pos_out.write(chrom+"\t"+str(pos)+"\t"+tnc+"."+mut)
+                    pos_out.write(chrom+"\t"+str(pos)+"\t"+tnc+"."+mut+"\n")
                     
                 if options["mpf"]:
                     for hi in which_is_het:
