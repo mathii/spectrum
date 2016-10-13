@@ -20,12 +20,13 @@ def parse_options():
     vcf: vcf input
     ref: 
     """
-    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1, "AA_INFO":False, "mpf":None,
-              "filter_file":None, "filter_values":(), "filter_list":None, "pos_out":None }
+    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1,
+              "AA_INFO":False, "mpf":None, "filter_file":None, "filter_values":(),
+              "filter_list":None, "pos_out":None, "private_panel":None }
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:f:l:i:a",
-                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "filter_file", "filter_value", "filter_list", "AA_INFO"])
+        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:n:f:l:i:a",
+                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "private_panel", "filter_file", "filter_value", "filter_list", "AA_INFO"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -37,7 +38,8 @@ def parse_options():
         elif o in ["-s","--ref_sample"]:    options["ref_sample"] = a
         elif o in ["-o","--out"]:           options["out"] = a
         elif o in ["-m","--mpf"]:           options["mpf"] = a #Output mutation position format
-        elif o in ["-p","--pos_out"]:       options["pos_out"] = a #Output position format with all variants and contex. 
+        elif o in ["-p","--pos_out"]:       options["pos_out"] = a #Output position format with all variants and contex.
+        elif o in ["-n","--private_panel"]: options["private_panel"] = a   #Only output private mutations
         elif o in ["-c","--count"]:         options["count"] = int(a) #allele count of variants to include
         elif o in ["-a", "AA_INFO"]:        options["AA_INFO"]=True
         elif o in ["-f","--filter_file"]:   options["filter_file"] = a #Filter values according to this fasta file
@@ -105,6 +107,19 @@ def print_results(results, options):
 
 ##########################################################################################################
 
+def load_panel(panel_file):
+    """
+    indiviual->population map
+    """
+    panel={}
+    pfile=open(panel_file, "w")
+    for line in pfile:
+        bits=line[:-1].split()
+        panel[bits[0]]=bits[1]
+    return panel
+        
+##########################################################################################################
+
 def main(options):
     """
     Run the analysis. 
@@ -127,6 +142,10 @@ def main(options):
     if options["pos_out"]:
         pos_out=open(options["pos_out"], "w")
 
+    private_panel=None
+    if options["private_panel"]:
+        private_panel=load_panel(options["private_panel"])
+        
     polarise_i=None
     results=None
     line_i=0
@@ -209,10 +228,20 @@ def main(options):
             hom_count=sum([g==mutgt for g in gts])
             total_count=het_count+2*hom_count
 
-            if total_count==options["count"]:
+            include_this_mutation=True
+            if total_count!=options["count"]:
+                include_this_mutation=False
+                
+            which_is_het= [i for i, x in enumerate(gts_with_pol) if x in hetgts]
+            which_is_hom= [i for i, x in enumerate(gts_with_pol) if x==mutgt]
+                
+            if private_panel:
+                pops=[private_panel[samples[x]] for x in which_is_het+which_is_hom]
+                    if not all([p=pops[0] for p in pops]):
+                        include_this_mutation=False
+
+            if include_this_mutation:
                 counted+=1
-                which_is_het= [i for i, x in enumerate(gts_with_pol) if x in hetgts]
-                which_is_hom= [i for i, x in enumerate(gts_with_pol) if x==mutgt]
                 key=(tnc[0]+anc+tnc[2], mut)
                 if key in results:
                     for igt in which_is_het:
