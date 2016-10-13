@@ -6,7 +6,12 @@ pops <- c("ESN", "GWD", "LWK", "MSL", "YRI", "ACB", "ASW", "CLM", "MXL", "PEL", 
 names(cols) <- pops
 cols<-cols[order(names(cols))]
 
-n <- 2
+ns <- 2:3
+
+cA <- commandArgs(TRUE)
+if(length(cA)){
+    ns <- as.numeric(cA[1])
+}
 
 exclude <- c("HG01149", "NA20582", "NA12275", "NA19728", "NA20540")
 
@@ -15,6 +20,7 @@ sig1 <- c("TCT.T", "TCC.T", "CCC.T", "ACC.T", "AGA.A", "GGA.A", "GGG.A", "GGT.A"
 sig2 <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T", "CGT.A", "CGG.A", "CGC.A", "CGA.A" )
     
 chr <- 1
+n <- ns[1]
 data <- read.table(paste0("~/spectrum/1kg/chr", chr, ".n", n), header=T)
 rownames(data) <- data[,1]
 data <- data[,2:NCOL(data)]
@@ -24,11 +30,14 @@ for(chr in 2:22){
     data <- data + d[,2:NCOL(d)]
 }
 
-for(n in 3){
-    for(chr in 2:22){
-        d <- read.table(paste0("~/spectrum/1kg/chr", chr, ".n", n), header=T)
-        rownames(d) <- d[,1]
-        data <- data + d[,2:NCOL(d)]
+if(length(ns)>1){    
+    for(i in 2:length(ns)){
+        n <- ns[i]
+        for(chr in 2:22){
+            d <- read.table(paste0("~/spectrum/1kg/chr", chr, ".n", n), header=T)
+            rownames(d) <- d[,1]
+            data <- data + d[,2:NCOL(d)]
+        }
     }
 }
 
@@ -54,19 +63,21 @@ pm2 <- pop.means[,2]
 names(pm2) <- pop.means[,1]
 pm2 <- sort(pm2)
 
-pdf(paste0("~/spectrum/plots/1kg_sig1.","pdf"), width=12, height=4)
+pdf(paste0("~/spectrum/1kg/1kg_sig1.n_", paste0(ns, collapse="_") ,".pdf"), width=12, height=4)
 par(mar=c(5.1,4.1,2.1,2.1))
 beeswarm(s1~pmap[names(s1)], pch=16, cex=0.3, col=cols, at=order(names(pm1)), xlab="Population", ylab="Signature 1", cex.axis=0.6)
-dev.off()
+junk <- dev.off()
 
-pdf(paste0("~/spectrum/plots/1kg_sig2.", "pdf"), width=12, height=4)
+pdf(paste0("~/spectrum/1kg/1kg_sig2.n_",paste0(ns, collapse="_") , ".pdf"), width=12, height=4)
 par(mar=c(5.1,4.1,2.1,2.1))
 beeswarm(s2~pmap[names(s2)], pch=16, cex=0.3, col=cols, at=order(names(pm2)), xlab="Population", ylab="Signature 2", cex.axis=0.6)
-dev.off()
+junk <- dev.off()
 
 s1.inc<-c("GBR", "TSI", "FIN", "IBS", "CEU", "PJL", "BEB", "STU", "ITU", "GIH")
-t.test(s1[pmap[names(s1)]%in%s1.inc], s1[!(pmap[names(s1)] %in% s1.inc)])
+t1 <- t.test(s1[pmap[names(s1)]%in%s1.inc], s1[!(pmap[names(s1)] %in% s1.inc)])
 
 s2.inc<-c("PEL", "MXL")
-t.test(s2[pmap[names(s2)]%in%s2.inc], s2[!(pmap[names(s2)] %in% s2.inc)])
+t2 <- t.test(s2[pmap[names(s2)]%in%s2.inc], s2[!(pmap[names(s2)] %in% s2.inc)])
 
+cat(paste(paste0(ns, collapse="_"), round(t1$estimate[1], 3), round(t1$estimate[2], 3), t1$statistic, t1$p.value, round(t2$estimate[1], 3),  round(t2$estimate[2], 3),t2$statistic, t2$p.value, sep="\t"))
+cat("\n")
