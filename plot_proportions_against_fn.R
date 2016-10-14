@@ -1,8 +1,13 @@
 ## Plot the proportion of variants in each class, as a function of n, as fn increases
 
-ns <- 2:30
+ns <- 1:30
 
 source("~/spectrum/code/spectrumlib.R")
+
+####################################################
+
+what <- ""
+what <- ".private"
 
 ####################################################
 
@@ -49,9 +54,9 @@ if(sig.name==2){
 
 for(i in 1:length(ns)){
     n <- ns[i]
-    data <- read.table(paste0("~/spectrum/data/spectrum_matrix.n", n, ".txt"), as.is=TRUE, header=TRUE)
+    data <- read.table(paste0("~/spectrum/data/spectrum_matrix.n", n, what, ".txt"), as.is=TRUE, header=TRUE)
     freq <- t(t(data)/colSums(data))
-    cnts <- read.table(paste0("~/spectrum/data/count_matrix.n", n, ".txt"), as.is=TRUE, header=TRUE)
+    cnts <- read.table(paste0("~/spectrum/data/count_matrix.n", n, what, ".txt"), as.is=TRUE, header=TRUE)
 
     for(reg in regions){
         proportions[i,reg] <-  mean(colSums(freq[sig,info[colnames(freq),"Region"] %in% reg]))
@@ -59,12 +64,14 @@ for(i in 1:length(ns)){
     }
 }
 
-pdf(paste0("~/spectrum/plots/fn_sig", sig.name, ".pdf"), width=8, height=5)
-plot(ns, proportions[,regions[1]], pch=16, cex=0.5, col=cols[regions[1]], ylim=ylim, xlab="Allele count", ylab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations"))
+pdf(paste0("~/spectrum/plots/fn_sig", sig.name, what, ".pdf"), width=8, height=5)
+plot(ns, proportions[,regions[1]], pch=16, cex=0.5, col=cols[regions[1]], ylim=ylim, xlab="Allele count", ylab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations"), xlim=c(0,10))
 lines(smooth.spline(ns, proportions[,regions[1]], spar=spr, w=wts), col=cols[regions[1]], lty=ltys[regions[1]])
 for(i in 2:length(regions)){
     points(ns, proportions[,regions[i]], pch=16, cex=0.5,  col=cols[regions[i]])
-lines(smooth.spline(ns, proportions[,regions[i]], spar=spr, w=wts), col=cols[regions[i]], lty=ltys[regions[i]])
+    inc<-!is.na(proportions[,regions[i]])
+    ## lines(smooth.spline(ns[inc], proportions[,regions[i]][inc], spar=spr, w=wts[inc]), col=cols[regions[i]], lty=ltys[regions[i]])
+    lines(ns[inc], proportions[,regions[i]][inc], col=cols[regions[i]], lty=ltys[regions[i]])
 }
 legend("topright", regions, cex=0.5, col=cols[regions], lty=ltys[regions], pch=16, bty="n", ncol=2)
 dev.off()
