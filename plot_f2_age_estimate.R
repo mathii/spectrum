@@ -134,11 +134,22 @@ for(reg1 in regions){
     for(reg2 in regions){
         total.all <- sum((reg[all$ID1]==reg1&reg[all$ID2]==reg2)|(reg[all$ID2]==reg1&reg[all$ID1]==reg2)*all$haps$f2)
         total.sig <- sum((reg[sig.env$ID1]==reg1&reg[sig.env$ID2]==reg2)|(reg[sig.env$ID2]==reg1&reg[sig.env$ID1]==reg2)*sig.env$haps$f2)
-
         all.matrix[reg1,reg2] <- all.matrix[reg1,reg2] <- total.all
         sig.matrix[reg1,reg2] <- sig.matrix[reg1,reg2] <- total.sig
     }
 }
+
+sig.100.matrix <- sig.matrix*0
+all.100.matrix <- all.matrix*0
+for(reg1 in regions){
+    for(reg2 in regions){
+        total.all.100 <- sum((reg[all$ID1]==reg1&reg[all$ID2]==reg2)|(reg[all$ID2]==reg1&reg[all$ID1]==reg2)*(all$t.hats<100)*all$haps$f2)
+        total.sig.100 <- sum((reg[sig.env$ID1]==reg1&reg[sig.env$ID2]==reg2)|(reg[sig.env$ID2]==reg1&reg[sig.env$ID1]==reg2)*(sig.env$t.hats<100)*sig.env$haps$f2)
+        all.100.matrix[reg1,reg2] <- all.100.matrix[reg1,reg2] <- total.all.100
+        sig.100.matrix[reg1,reg2] <- sig.100.matrix[reg1,reg2] <- total.sig.100
+    }
+}
+
 
 plot((all.matrix/colSums(all.matrix))["America",], (sig.matrix/colSums(sig.matrix))["America",], xlab="Proportion of all f2 variants that America shares with each region", ylab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations that America shares with each region"))
 text((all.matrix/colSums(all.matrix))["America",], (sig.matrix/colSums(sig.matrix))["America",], regions, pos=4, cex=0.5)
