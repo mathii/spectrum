@@ -7,7 +7,10 @@ source("~/spectrum/code/spectrumlib.R")
 ####################################################
 
 what <- ""
-what <- ".private"
+cA <- commandArgs(TRUE)
+if(length(cA)>0){
+  what <- paste0(".", cA[1])
+}
 
 ####################################################
 
@@ -23,6 +26,11 @@ ylim=c(0.13, 0.22)
 in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
 spr <- 0.25
 wts<-c(10,20,10,10,10,20,rep(1,length(ns)-6))
+
+####################################################
+
+if(what==".poly_Africa" & sig.name==2){ylim <- c(0.13, 0.6)}
+if(what==".private" & sig.name==2){ylim <- c(0.13, 0.24)}
 
 ####################################################
 
@@ -63,6 +71,8 @@ for(i in 1:length(ns)){
         counts[i,reg] <-  sum(colSums(cnts[sig,info[colnames(cnts),"Region"] %in% reg]))
     }
 }
+
+regions <- regions[!is.nan(unlist(proportions[1,]))]
 
 pdf(paste0("~/spectrum/plots/fn_sig", sig.name, what, ".pdf"), width=8, height=5)
 plot(ns, proportions[,regions[1]], pch=16, cex=0.5, col=cols[regions[1]], ylim=ylim, xlab="Allele count", ylab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations"), xlim=c(0,10))
