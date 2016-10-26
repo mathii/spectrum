@@ -112,7 +112,7 @@ def load_panel(panel_file):
     indiviual->population map
     """
     panel={}
-    pfile=open(panel_file, "w")
+    pfile=open(panel_file, "r")
     for line in pfile:
         bits=line[:-1].split()
         panel[bits[0]]=bits[1]
@@ -235,10 +235,10 @@ def main(options):
             which_is_het= [i for i, x in enumerate(gts_with_pol) if x in hetgts]
             which_is_hom= [i for i, x in enumerate(gts_with_pol) if x==mutgt]
                 
-            if private_panel:
-                pops=[private_panel[samples[x]] for x in which_is_het+which_is_hom]
-                    if not all([p=pops[0] for p in pops]):
-                        include_this_mutation=False
+            if include_this_mutation and private_panel:
+                pops=[private_panel[results["samples"][x]] for x in which_is_het+which_is_hom if results["samples"][x] != options["ref_sample"] ]
+                if not len(pops) or not all([p==pops[0] for p in pops]):
+                    include_this_mutation=False
 
             if include_this_mutation:
                 counted+=1
