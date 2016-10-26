@@ -61,7 +61,7 @@ bsub -q short -W12:00 "python ~/spectrum/code/mutation_spectrum.py \
 -v /groups/reich/iain/spectrum_sgdp/cteam_extended.v4.chr${chr}.vcf.gz \
 -r /groups/reich/reference-genomes/hs37d5/unzipped/hs37d5.fa \
 -s panTro2 -c 2 -o ~/spectrum/rrate/chr${chr}.n2.b${b}.txt \
--f /groups/reich/groups/reich/iain/data_fastas/hs37d5.RRate_decile.fa -l $b"
+-f /groups/reich/iain/data_fastas/hs37d5.RRate_decile.fa -l $b"
 done
 done
 

@@ -66,7 +66,7 @@ for(chr in 2:22){
 }
 
 totals <- colSums(data)
-min.total <- 1000
+min.total <- 0
 data <- data[,totals>min.total]
 data <- data[,!(colnames(data) %in% exclude)]
 data <- data[,!(colnames(data) %in% ref)]
