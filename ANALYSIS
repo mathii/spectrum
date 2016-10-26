@@ -53,6 +53,19 @@ done
 done
 done
 
+#1000 Genomes
+DPATH=/groups/reich/datasets/1kg/20130502_phase3_final/
+for n in {4..6}
+do
+for chr in {1..22}
+do
+bsub -q short -W12:00  "python code/mutation_spectrum.py \
+-v ${DPATH}/ALL.chr${chr}.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz \
+-a -r /groups/reich/reference-genomes/hs37d5/unzipped/hs37d5.fa -c ${n} \
+-o ~/spectrum/1kg/chr${chr}.n${n}.txt"
+done
+done
+
 #Spectrum vs B statistic
 for chr in {1..22}
 do
