@@ -20,7 +20,7 @@ def parse_options():
     vcf: vcf input
     ref: 
     """
-    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":1,
+    options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":None,
               "AA_INFO":False, "mpf":None, "filter_file":None, "filter_values":(),
               "filter_list":None, "pos_out":None, "private_panel":None }
 
@@ -49,6 +49,12 @@ def parse_options():
     print( "found options:", file=sys.stderr)
     print( options, file=sys.stderr)
 
+    if not count:
+        print("***** Using variants of all counts ******")
+    else:
+        print("Using variants of derived allele count "+str(options["count"]))
+            
+    
     return options, args
 
 ##########################################################################################################
@@ -229,7 +235,7 @@ def main(options):
             total_count=het_count+2*hom_count
 
             include_this_mutation=True
-            if total_count!=options["count"]:
+            if options["count"] and total_count!=options["count"]:
                 include_this_mutation=False
                 
             which_is_het= [i for i, x in enumerate(gts_with_pol) if x in hetgts]
