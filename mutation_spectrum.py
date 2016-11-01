@@ -49,7 +49,7 @@ def parse_options():
     print( "found options:", file=sys.stderr)
     print( options, file=sys.stderr)
 
-    if not count:
+    if not options["count"]:
         print("***** Using variants of all counts ******")
     else:
         print("Using variants of derived allele count "+str(options["count"]))
