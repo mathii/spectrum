@@ -7,7 +7,7 @@ tag <- wut <- ""
 
 cA <- commandArgs(TRUE)
 if(length(cA)>0){
-    n <- as.numeric(cA[1])
+    n <- cA[1]
 }
 if(length(cA)>1){
     exclude.cell.lines <- as.logical(as.numeric(cA[2]))

@@ -25,6 +25,16 @@ bsub -q short -W12:00 "python code/mutation_spectrum.py \
 done
 done
 
+#All count mutation spectrum extraction
+for chr in {1..22}
+do
+bsub -q short -W12:00 "python ~/spectrum/code/mutation_spectrum.py \
+-v /groups/reich/iain/spectrum_sgdp/cteam_extended.v4.chr${chr}.vcf.gz \
+-r /groups/reich/reference-genomes/hs37d5/unzipped/hs37d5.fa \
+-s panTro2 -o ~/spectrum/counts/chr${chr}.nALL.txt"
+done
+
+
 #Private mutation spectrum extraction
 for n in {1..4}
 do
