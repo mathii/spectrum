@@ -162,12 +162,12 @@ ec.100 <- make.spectrum(ntrees, nsamples, expfun.100, double.prob=0.1)
 ec.1000 <- make.spectrum(ntrees, nsamples, expfun.1000, double.prob=0.1)
 
 pdf("~/spectrum/plots/simulated_CpG_spectrum_proportion.pdf")
-a <- 0.83
-plot((1-a)*sc$s2/((1-a)*sc$s2+a*sc$s1), xlim=c(0,20), ylim=c(0.15,0.25), type="o", pch=16, xlab="Allele count", ylab="Proportion of CpG mutations")
-points((1-a)*ec.10$s2/((1-a)*ec.10$s2+a*ec.10$s1), xlim=c(0,20), pch=16, type="o", col="#66C2A5")
-points((1-a)*ec.100$s2/((1-a)*ec.100$s2+a*ec.100$s1), xlim=c(0,20), pch=16, type="o", col="#FC8D62")
-points((1-a)*ec.1000$s2/((1-a)*ec.1000$s2+a*ec.1000$s1), xlim=c(0,20), pch=16, type="o", col="#8DA0CB")
-legend("topright", c("Constant size", "10-fold exponential growth", "100-fold exponential growth", "1000-fold exponential growth"), pch=16, lty=1, col=c("black", "#66C2A5", "#FC8D62", "#8DA0CB"), bty="n")
+a <- 0.85
+plot((1-a)*sc$s2/((1-a)*sc$s2+a*sc$s1), xlim=c(0,20), ylim=c(0.13,0.23), type="o", pch=16, xlab="Allele count", ylab="Proportion of CpG mutations", lwd=2)
+points((1-a)*ec.10$s2/((1-a)*ec.10$s2+a*ec.10$s1), xlim=c(0,20), pch=16, type="o", col="#66C2A5", lwd=2)
+points((1-a)*ec.100$s2/((1-a)*ec.100$s2+a*ec.100$s1), xlim=c(0,20), pch=16, type="o", col="#FC8D62", lwd=2)
+points((1-a)*ec.1000$s2/((1-a)*ec.1000$s2+a*ec.1000$s1), xlim=c(0,20), pch=16, type="o", col="#8DA0CB", lwd=2)
+legend("topright", c("Constant size", "10-fold exponential growth", "100-fold exponential growth", "1000-fold exponential growth"), pch=16, lty=1, col=c("black", "#66C2A5", "#FC8D62", "#8DA0CB"), bty="n", lwd=2)
 dev.off()
     
 ## save.image(file="~/spectrum/plots/repeat_mutation_data.Rdata")

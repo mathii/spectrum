@@ -74,14 +74,14 @@ for(i in 1:length(ns)){
 
 regions <- regions[!is.nan(unlist(proportions[1,]))]
 
-pdf(paste0("~/spectrum/plots/fn_sig", sig.name, what, ".pdf"), width=8, height=5)
-plot(ns, proportions[,regions[1]], pch=16, cex=0.5, col=cols[regions[1]], ylim=ylim, xlab="Allele count", ylab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations"), xlim=c(0,10))
-lines(smooth.spline(ns, proportions[,regions[1]], spar=spr, w=wts), col=cols[regions[1]], lty=ltys[regions[1]])
+pdf(paste0("~/spectrum/plots/fn_sig", sig.name, what, ".pdf"))
+plot(ns, proportions[,regions[1]], pch=16, cex=0.75, col=cols[regions[1]], ylim=ylim, xlab="Allele count", ylab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations"), xlim=c(0,30))
+lines(smooth.spline(ns, proportions[,regions[1]], spar=spr, w=wts), col=cols[regions[1]], lty=ltys[regions[1]], lwd=2)
 for(i in 2:length(regions)){
-    points(ns, proportions[,regions[i]], pch=16, cex=0.5,  col=cols[regions[i]])
+    points(ns, proportions[,regions[i]], pch=16, cex=0.75,  col=cols[regions[i]])
     inc<-!is.na(proportions[,regions[i]])
-    ## lines(smooth.spline(ns[inc], proportions[,regions[i]][inc], spar=spr, w=wts[inc]), col=cols[regions[i]], lty=ltys[regions[i]])
-    lines(ns[inc], proportions[,regions[i]][inc], col=cols[regions[i]], lty=ltys[regions[i]])
+    lines(smooth.spline(ns[inc], proportions[,regions[i]][inc], spar=spr, w=wts[inc]), col=cols[regions[i]], lty=ltys[regions[i]], lwd=2)
+    ## lines(ns[inc], proportions[,regions[i]][inc], col=cols[regions[i]], lty=ltys[regions[i]], lwd=2)
 }
-legend("topright", regions, cex=0.5, col=cols[regions], lty=ltys[regions], pch=16, bty="n", ncol=2)
+legend("topright", regions, lwd=2, col=cols[regions], lty=ltys[regions], pch=16, bty="n", ncol=2)
 dev.off()
