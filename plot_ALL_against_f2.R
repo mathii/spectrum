@@ -12,14 +12,14 @@ if(length(cA)>0){
 
 ####################################################
 
-## sig.name <- 1
-## sig <- c("TCC.T", "ACC.T", "TCT.T", "CCC.T")
-## ylim=c(0.065, 0.105)
+sig.name <- 1
+sig <- c("TCC.T", "ACC.T", "TCT.T", "CCC.T")
+ylim=c(0.0614, 0.0626)
 
-sig.name <- 2
-sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
-ylim=c(0.13, 0.22)
-in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
+## sig.name <- 2
+## sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
+## ylim=c(0.1190, 0.1210)
+## in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
 
 ####################################################
 
@@ -54,7 +54,7 @@ f2.proportion <- colSums(f2.data[sig,])/colSums(f2.data)
 ALL.proportion <- colSums(ALL.data[sig,])/colSums(ALL.data)
 
 pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig", sig.name, ".pdf"))
-plot(f2.proportion, ALL.proportion, col=cols[reg[names(f2.proportion)]], ylim=c(0.1190, 0.1210), xlab="Proportion of f2 variants that are signature 2", ylab="Proportion of all variants, per genome, that are signature 2")
+plot(f2.proportion, ALL.proportion, col=cols[reg[names(f2.proportion)]], ylim=ylim, xlab=paste0("Proportion of f2 variants that are signature ", sig.name), ylab=paste0("Proportion of all variants, per genome, that are signature ", sig.name))
 legend("bottomright", names(cols), col=cols, bty="n", pch=1)
 dev.off()
 

@@ -18,7 +18,7 @@ subtract <- FALSE
 
 cA <- commandArgs(TRUE)
 if(length(cA)>0){
-    n <- as.numeric(cA[1])
+  n <- cA[1]
 }
 if(length(cA)>1){
     rank <- as.numeric(cA[2])
@@ -40,7 +40,7 @@ if(length(cA)>6){
 }
 
 
-inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
+inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n ,tag, ".txt")
 
 freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 
@@ -72,15 +72,15 @@ if(spec=="count"){
 }
 
 pdf(paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
-if(n==2 & rank==4 & method=="ica" & spec=="totalnorm"){
+if(n=="2" & rank==4 & method=="ica" & spec=="totalnorm"){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,3,3), yploti=c(4,1,4,2))
-}else if(n==2 & rank==4 & method=="ica"){
+}else if(n=="2" & rank==4 & method=="ica"){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(4,3,1,2), yploti=c(1,2,3,4))
-}else if(n==2 & rank==4 & method=="random"){
+}else if(n=="2" & rank==4 & method=="random"){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(3,4,2,1), yploti=c(2,1,4,3))
-}else if(n==3 & rank==3){
+}else if(n=="3" & rank==3){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,2), yploti=c(3,1))
-}else if(n==3 & rank==4){
+}else if(n=="3" & rank==4){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,4,2), yploti=c(4,1,3,1))
 }else{
     plot.components(t(coeff), name.map, src, cols=cols, n.components=rank, layout=c(2,2))
