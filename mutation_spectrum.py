@@ -208,7 +208,7 @@ def main(options):
                 else:
                     skipped+=1
                     continue
-            elif polarise_i:
+            elif options["ref_sample"]:
                 if bits[9+polarise_i]=="0/0":
                     pass
                 elif bits[9+polarise_i]=="1/1":

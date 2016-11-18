@@ -63,6 +63,5 @@ dev.off()
 
 pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig_total", sig.name, what, ".pdf"))
 plot(ALL.notsig.total, ALL.sig.total, col=cols[reg[names(ALL.sig.total)]], )
-legend("bottomright", names(cols), col=cols, bty="n", pch=1)
 dev.off()
 
