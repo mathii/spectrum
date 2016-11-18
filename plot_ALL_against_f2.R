@@ -42,6 +42,9 @@ rownames(info) <- gsub("-", ".", info$ID)
 f2.data <- read.table(paste0("~/spectrum/data/count_matrix.n2.txt"), as.is=TRUE, header=TRUE)
 ALL.data <- read.table(paste0("~/spectrum/data/count_matrix.nALL.txt"), as.is=TRUE, header=TRUE)
 
+f2.data <- f2.data[,!(colnames(f2.data)=="S_Daur.1")]
+ALL.data <- ALL.data[,!(colnames(ALL.data)=="S_Daur.1")]                   
+
 f2.proportion <- colSums(f2.data[sig,])/colSums(f2.data)
 ALL.proportion <- colSums(ALL.data[sig,])/colSums(ALL.data)
 

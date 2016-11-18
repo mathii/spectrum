@@ -22,11 +22,11 @@ def parse_options():
     """
     options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":None,
               "AA_INFO":False, "mpf":None, "filter_file":None, "filter_values":(),
-              "filter_list":None, "pos_out":None, "private_panel":None }
+              "filter_list":None, "pos_out":None, "private_panel":None, "hom_weight":2 }
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:n:f:l:i:a",
-                                    ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "private_panel", "filter_file", "filter_value", "filter_list", "AA_INFO"])
+        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:n:f:l:i:h:a",
+        ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "private_panel", "filter_file", "filter_value", "filter_list", "hom_weight", "AA_INFO"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -37,6 +37,7 @@ def parse_options():
         elif o in ["-r","--ref"]:           options["ref"] = a
         elif o in ["-s","--ref_sample"]:    options["ref_sample"] = a
         elif o in ["-o","--out"]:           options["out"] = a
+        elif o in ["-h","--hom_weight"]:    options["out"] = float(a)
         elif o in ["-m","--mpf"]:           options["mpf"] = a #Output mutation position format
         elif o in ["-p","--pos_out"]:       options["pos_out"] = a #Output position format with all variants and contex.
         elif o in ["-n","--private_panel"]: options["private_panel"] = a   #Only output private mutations
@@ -253,7 +254,7 @@ def main(options):
                     for igt in which_is_het:
                         results[key][igt]+=1
                     for igt in which_is_hom:
-                        results[key][igt]+=2
+                        results[key][igt]+=options["hom_weight"]
                 else:
                     skipped+=1
                     
