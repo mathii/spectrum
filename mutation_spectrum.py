@@ -181,7 +181,7 @@ def main(options):
             hetgts=["01", "10"]
             mutgt="11"
             
-            if len(anc)>1 or len(ref)>1: #Only include bialleleic SNPs
+            if len(alt)>1 or len(ref)>1: #Only include bialleleic SNPs
                 continue
 
             if filter and filter[chrom][pos-1].seq not in options["filter_values"]:

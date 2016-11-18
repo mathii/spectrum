@@ -15,11 +15,7 @@ if(length(cA)>0){
 ## sig.name <- 1
 ## sig <- c("TCC.T", "ACC.T", "TCT.T", "CCC.T")
 ## ylim=c(0.065, 0.105)
-
-sig.name <- 2
-sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
-ylim=c(0.13, 0.22)
-in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
+hi.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
 
 ####################################################
 
@@ -31,14 +27,6 @@ sig.map=c(2,4,3,1)
 regions <- sort(unique(info$Region))
 ltys <- rep(1, length(cols))
 names(ltys) <- names(cols)
-if(sig.name==2){
-    regions <- c("Africa", "America_Hi", "America_Lo", "CentralAsiaSiberia", "EastAsia", "Oceania", "SouthAsia", "WestEurasia")
-    hi.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
-    ## cols <- c(cols, "America_Hi"="#984EA3", "America_Lo"="#984EA3")
-    ## ltys <- rep(1, length(cols))
-    ## names(ltys) <- names(cols)
-    ## ltys["America_Lo"] <- 2
-}
 
 rownames(info) <- gsub("-", ".", info$ID)
 
@@ -53,9 +41,21 @@ ALL.data <- read.table(paste0("~/spectrum/data/count_matrix.nALL.txt"), as.is=TR
 f2.proportion <- colSums(f2.data[sig,])/colSums(f2.data)
 ALL.proportion <- colSums(ALL.data[sig,])/colSums(ALL.data)
 
+f2.sig.total <- colSums(f2.data[sig,])
+f2.variants.total <- colSums(f2.data)
+ALL.sig.total <- colSums(ALL.data[sig,])
+ALL.variants.total <- colSums(ALL.data)
+ALL.notsig.total <- colSums(ALL.data[!(rownames(ALL.data) %in% sig),])
+
 pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig", sig.name, ".pdf"))
 plot(f2.proportion, ALL.proportion, col=cols[reg[names(f2.proportion)]], ylim=c(0.1190, 0.1210), xlab="Proportion of f2 variants that are signature 2", ylab="Proportion of all variants, per genome, that are signature 2")
 legend("bottomright", names(cols), col=cols, bty="n", pch=1)
 dev.off()
 
-t.test(ALL.proportion[reg[names(ALL.proportion)]%in%c("America", "CentralAsiaSiberia", "EastAsia", "Oceania", "SouthAsia", "WestEurasia")], ALL.proportion[hi.ind])
+## t.test(ALL.proportion[reg[names(ALL.proportion)]%in%c("America", "CentralAsiaSiberia", "EastAsia", "Oceania", "SouthAsia", "WestEurasia")], ALL.proportion[hi.ind])
+
+pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig_total", sig.name, ".pdf"))
+plot(ALL.notsig.total, ALL.sig.total, col=cols[reg[names(f2.proportion)]], )
+legend("bottomright", names(cols), col=cols, bty="n", pch=1)
+dev.off()
+
