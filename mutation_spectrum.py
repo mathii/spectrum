@@ -22,11 +22,12 @@ def parse_options():
     """
     options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":None,
               "AA_INFO":False, "mpf":None, "filter_file":None, "filter_values":(),
-              "filter_list":None, "pos_out":None, "private_panel":None, "hom_weight":2 }
+              "filter_list":None, "pos_out":None, "private_panel":None, "hom_weight":2,
+              "max_missing":0}
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:n:f:l:i:h:a",
-        ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "private_panel", "filter_file", "filter_value", "filter_list", "hom_weight", "AA_INFO"])
+        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:n:f:l:i:h:x:a",
+        ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "private_panel", "filter_file", "filter_value", "filter_list", "hom_weight", "max_missing", "AA_INFO"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -38,6 +39,7 @@ def parse_options():
         elif o in ["-s","--ref_sample"]:    options["ref_sample"] = a
         elif o in ["-o","--out"]:           options["out"] = a
         elif o in ["-h","--hom_weight"]:    options["hom_weight"] = float(a)
+        elif o in ["-x","--max_missing"]:   options["max_missing"] = int(a)
         elif o in ["-m","--mpf"]:           options["mpf"] = a #Output mutation position format
         elif o in ["-p","--pos_out"]:       options["pos_out"] = a #Output position format with all variants and contex.
         elif o in ["-n","--private_panel"]: options["private_panel"] = a   #Only output private mutations
@@ -157,6 +159,7 @@ def main(options):
     results=None
     line_i=0
     skipped=0
+    missing=0
     counted=0
 
     for line in data:
@@ -233,12 +236,17 @@ def main(options):
             gts_with_pol=[g[0]+g[2] for g in bits[9:]]   #Genotypes with the polarising sample
             het_count=sum([g in hetgts for g in gts])
             hom_count=sum([g==mutgt for g in gts])
+            miss_count=sum([g=="./." for g in gts])
             total_count=het_count+2*hom_count
 
             include_this_mutation=True
             if options["count"] and total_count!=options["count"]:
                 include_this_mutation=False
-                
+
+            if options["max_missing"] and miss_count>options["max_missing"]:
+                missing+=1
+                include_this_mutation=False
+
             which_is_het= [i for i, x in enumerate(gts_with_pol) if x in hetgts]
             which_is_hom= [i for i, x in enumerate(gts_with_pol) if x==mutgt]
                 
@@ -271,6 +279,7 @@ def main(options):
                             mpf_out.write(results["samples"][hi]+"\tchr"+chrom+"\t"+str(pos)+"\t"+anc+"\t"+mut+"\n")                        
                     
     print("Skipped "+str(skipped)+"/"+str(line_i))
+    print("Missing "+str(missing)+"/"+str(line_i))
     print("Counted "+str(counted)+"/"+str(line_i))
     print_results(results, options)
                      

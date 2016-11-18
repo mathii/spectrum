@@ -19,7 +19,7 @@ if(length(cA)>0){
 sig.name <- 2
 sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
 ylim=c(0.1190, 0.1210)
-hi.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
+## hi.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
 
 ####################################################
 
