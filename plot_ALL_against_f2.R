@@ -39,8 +39,8 @@ rownames(info) <- gsub("-", ".", info$ID)
 ##     info[info[rownames(info),"Region"]=="America","Region"] <- "America_Lo"
 ## }
 
-f2.data <- read.table(paste0("~/spectrum/data/count_matrix.n2.txt"), as.is=TRUE, header=TRUE)
-ALL.data <- read.table(paste0("~/spectrum/data/count_matrix.nALL.txt"), as.is=TRUE, header=TRUE)
+f2.data <- read.table(paste0("~/spectrum/data/count_matrix.n2", what, ".txt"), as.is=TRUE, header=TRUE)
+ALL.data <- read.table(paste0("~/spectrum/data/count_matrix.nALL", what, ".txt"), as.is=TRUE, header=TRUE)
 
 f2.data <- f2.data[,!(colnames(f2.data)=="S_Daur.1")]
 ALL.data <- ALL.data[,!(colnames(ALL.data)=="S_Daur.1")]                   
@@ -54,15 +54,15 @@ ALL.sig.total <- colSums(ALL.data[sig,])
 ALL.variants.total <- colSums(ALL.data)
 ALL.notsig.total <- colSums(ALL.data[!(rownames(ALL.data) %in% sig),])
 
-pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig", sig.name, ".pdf"))
+pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig", sig.name, what, ".pdf"))
 plot(f2.proportion, ALL.proportion, col=cols[reg[names(f2.proportion)]], ylim=ylim, xlab=paste0("Proportion of f2 variants that are signature ", sig.name), ylab=paste0("Proportion of all variants, per genome, that are signature ", sig.name))
 legend("bottomright", names(cols), col=cols, bty="n", pch=1)
 dev.off()
 
 ## t.test(ALL.proportion[reg[names(ALL.proportion)]%in%c("America", "CentralAsiaSiberia", "EastAsia", "Oceania", "SouthAsia", "WestEurasia")], ALL.proportion[hi.ind])
 
-pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig_total", sig.name, ".pdf"))
-plot(ALL.notsig.total, ALL.sig.total, col=cols[reg[names(f2.proportion)]], )
+pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig_total", sig.name, what, ".pdf"))
+plot(ALL.notsig.total, ALL.sig.total, col=cols[reg[names(ALL.sig.total)]], )
 legend("bottomright", names(cols), col=cols, bty="n", pch=1)
 dev.off()
 

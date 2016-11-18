@@ -37,7 +37,7 @@ def parse_options():
         elif o in ["-r","--ref"]:           options["ref"] = a
         elif o in ["-s","--ref_sample"]:    options["ref_sample"] = a
         elif o in ["-o","--out"]:           options["out"] = a
-        elif o in ["-h","--hom_weight"]:    options["out"] = float(a)
+        elif o in ["-h","--hom_weight"]:    options["hom_weight"] = float(a)
         elif o in ["-m","--mpf"]:           options["mpf"] = a #Output mutation position format
         elif o in ["-p","--pos_out"]:       options["pos_out"] = a #Output position format with all variants and contex.
         elif o in ["-n","--private_panel"]: options["private_panel"] = a   #Only output private mutations
