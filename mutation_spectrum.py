@@ -230,7 +230,7 @@ def main(options):
             # Check for the condition, exactly options["count"] of the allele in the dataset.
 
             gtbits=bits[9:]
-            if polarise_i:
+            if options["ref_sample"]:
                 gtbits.pop(polarise_i)
             gts=[g[0]+g[2] for g in gtbits]   #Genotypes excludeing the polarising sample
             gts_with_pol=[g[0]+g[2] for g in bits[9:]]   #Genotypes with the polarising sample
