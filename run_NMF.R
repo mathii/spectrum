@@ -82,8 +82,10 @@ if(n=="2" & rank==4 & method=="ica" & spec=="totalnorm"){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,2), yploti=c(3,1))
 }else if(n=="3" & rank==4){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,4,2), yploti=c(4,1,3,1))
+}else if(rank==2){
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank)
 }else{
-    plot.components(t(coeff), name.map, src, cols=cols, n.components=rank, layout=c(2,2))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2))
 }
 dev.off()
 
