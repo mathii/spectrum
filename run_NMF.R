@@ -75,13 +75,13 @@ pdf(paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, t
 if(n=="2" & rank==4 & method=="ica" & spec=="totalnorm"){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,3,3), yploti=c(4,1,4,2))
 }else if(n=="2" & rank==4 & method=="ica"){
-    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(4,3,1,2), yploti=c(1,2,3,4))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(3,4,1,2), yploti=c(1,2,4,3))
 }else if(n=="2" & rank==4 & method=="random"){
-    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(3,4,2,1), yploti=c(2,1,4,3))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(1,2,3,4), yploti=c(4,3,2,1))
 }else if(n=="3" & rank==3){
-    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,2), yploti=c(3,1))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,2), yploti=c(1,3))
 }else if(n=="3" & rank==4){
-    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,4,2), yploti=c(4,1,3,1))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(4,2,3,4), yploti=c(3,1,1,2))
 }else if(rank==2){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank)
 }else{
