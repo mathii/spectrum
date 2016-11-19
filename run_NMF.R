@@ -23,7 +23,7 @@ if(length(cA)>0){
 if(length(cA)>1){
     rank <- as.numeric(cA[2])
 }
-if(length(cA)>2){
+if(length(cA)>2 & !(cA[3] %in% c("", "."))){
     tag <- paste0(".", cA[3])
 }
 if(length(cA)>3){

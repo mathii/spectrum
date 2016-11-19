@@ -16,13 +16,13 @@ if(length(cA)>0){
 
 ## sig.name <- 1
 ## sig <- c("TCC.T", "ACC.T", "TCT.T", "CCC.T")
-## ylim=c(0.065, 0.105)
+## ylim=c(0.07, 0.11)
 ## spr<-0.5
 ## wts<-c(10,20,10,5,rep(1,length(ns)-4))
 
 sig.name <- 2
 sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
-ylim=c(0.13, 0.22)
+ylim=c(0.12, 0.19)
 in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
 spr <- 0.25
 wts<-c(10,20,10,10,10,20,rep(1,length(ns)-6))
