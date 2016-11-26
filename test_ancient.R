@@ -20,9 +20,11 @@ inname <- paste0("~/spectrum/data/", spec ,"_matrix.n", n,tag, ".txt")
 
 freq2 <- read.table(inname, header=TRUE, as.is=TRUE )
 ## Exclude ancient samples for this analysis
-ancient <- c("Altai", "Denisova", "Loschbour", "LBK", "UstIshim", "Vindija")
+## ancient <- c("Altai", "Denisova", "Loschbour", "LBK", "UstIshim", "Vindija")
+## ancientmap <- c("Altai Neandertal", "Denisova", "Loschbour", "Stuttgart", "Ust' Ishim", "Vindija Neandertal")
+ancient <- c("Altai", "Denisova", "Loschbour", "LBK", "UstIshim")
+ancientmap <- c("Altai Neandertal", "Denisova", "Loschbour", "Stuttgart", "Ust' Ishim")
 
-ancientmap <- c("Altai Neandertal", "Denisova", "Loschbour", "Stuttgart", "Ust' Ishim", "Vindija Neandertal")
 names(ancientmap) <- ancient
 
 freq2 <- as.matrix(freq2)
@@ -78,7 +80,9 @@ pdf(paste0("~/spectrum/plots/","Corrected_",  ifelse(spec=="spectrum", "", paste
 aa <- ancientmap[ancient]
 names(aa) <- ancientmap[ancient]
 regplot <- c(reg, aa)
-anc.ro <- c( "Loschbour" , "Stuttgart", "Ust' Ishim", "Altai Neandertal", "Vindija Neandertal", "Denisova" )
+## anc.ro <- c( "Loschbour" , "Stuttgart", "Ust' Ishim", "Altai Neandertal", "Vindija Neandertal", "Denisova" )
+anc.ro <- c( "Loschbour" , "Stuttgart", "Ust' Ishim", "Altai Neandertal", "Denisova" )
+
 mod.ro <-  c(  "Africa", "Oceania", "EastAsia",  "CentralAsiaSiberia", "America", "SouthAsia", "WestEurasia")
 ro <- c(mod.ro ,anc.ro)
 regplot <- factor(regplot,ro)

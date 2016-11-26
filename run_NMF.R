@@ -52,8 +52,9 @@ if(subtract){
 if(subtract & spec=="spectrum"){
     freq2["ATA.C",] <- 0.00001         #Null row.
 }
-## freq2 <- t(t(freq2)/colSums(freq2))
-
+if(spec=="totalnorm"){
+  freq2 <- t(t(freq2)/colSums(freq2))
+}
 ## Non-negative Matrix factorization
 seed <- ifelse(method=="random", rep(123456, 6), method)
 

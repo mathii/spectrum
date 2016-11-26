@@ -2,18 +2,18 @@
 
 source("~/spectrum/code/spectrumlib.R")
 
-sig <- c("TCT.T", "TCC.T", "CCC.T", "ACC.T")
-sig.rc <- c( "AGA.A", "GGA.A", "GGG.A", "GGT.A" )
-sig.name <- "1"
-in.pops <- "WestEurasia"
-out.pops <- c("WestEurasia", "SouthAsia")
+## sig <- c("TCT.T", "TCC.T", "CCC.T", "ACC.T")
+## sig.rc <- c( "AGA.A", "GGA.A", "GGG.A", "GGT.A" )
+## sig.name <- "1"
+## in.pops <- "WestEurasia"
+## out.pops <- c("WestEurasia", "SouthAsia")
 
-## sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
-## sig.rc <- c("CGT.A", "CGG.A", "CGC.A", "CGA.A" )
-## sig.name <- 2
-## in.pops <- "America (high)"
-## out.pops <- "America (high)"
-## in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
+sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
+sig.rc <- c("CGT.A", "CGG.A", "CGC.A", "CGA.A" )
+sig.name <- 2
+in.pops <- "America (high)"
+out.pops <- "America (high)"
+in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
 
 n <- 2
 
