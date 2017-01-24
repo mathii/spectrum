@@ -63,9 +63,10 @@ if(what=="Bstat"){
     xlab <- "Recombination rate decile"
 }
 
-pdf(paste0("~/spectrum/plots/", what, "_sig", sig.name, ".pdf")) 
-boxplot(prop~in.group+bq, data=props, col=rep(c( cols[in.pops], "white"), 10), frame=F, xaxt="n", xlab=xlab, ylab=paste0("Proportion of signature ", sig.name ," mutations"))
-mtext(paste0((0:9)*10, "-", (1:10)*10, "%"), side=1, at=2*(1:10)-0.5, cex=0.75, line=-1)
+pdf(paste0("~/spectrum/plots/", what, "_sig", sig.name, ".pdf"))
+par(mar=c(5.1, 5.1, 4.1, 2.1))
+boxplot(prop~in.group+bq, data=props, col=rep(c( cols[in.pops], "white"), 10), frame=F, xaxt="n", xlab=xlab, ylab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations"), cex.axis=1.4, cex.lab=1.4)
+mtext(paste0((0:9)*10, "-", (1:10)*10, "%"), side=1, at=2*(1:10)-0.5, cex=1, line=c(0,1))
 
 ## if(grepl("^rrate", what)){
 ##     print("rrate")

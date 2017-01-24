@@ -77,6 +77,7 @@ for(i in 1:length(ancient)){
 
 
 pdf(paste0("~/spectrum/plots/","Corrected_",  ifelse(spec=="spectrum", "", paste0(spec, "_")), ".n", n, ".", r1, "-", r2, ".", what.anc, ".pdf"), 6, 6)
+par(mar=c(8.1, 4.1, 4.1, 2.1))
 aa <- ancientmap[ancient]
 names(aa) <- ancientmap[ancient]
 regplot <- c(reg, aa)
@@ -87,7 +88,7 @@ mod.ro <-  c(  "Africa", "Oceania", "EastAsia",  "CentralAsiaSiberia", "America"
 ro <- c(mod.ro ,anc.ro)
 regplot <- factor(regplot,ro)
 cc <- c(cols[ro[1:7]], rep("black", length(ancient)))
-beeswarm(logratio~regplot[names(logratio)], cex.axis=0.6, las=2, col=cc, pch=16, cex=0.7, xlab="", ylab=expression("M"[2]), bty="n")
+beeswarm(logratio~regplot[names(logratio)], cex.axis=1, las=2, col=cc, pch=16, cex=0.6, xlab="", ylab=expression("M"[2]), bty="n")
 
 for(i in 1:length(anc.ro)){
   x <- length(mod.ro) + i

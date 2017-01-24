@@ -4,6 +4,7 @@
 ## With probability b, a type 2 mutation is a double mutation.
 ## Assume that double mutations never happen on the same part of the tree
 ## That already mutated. 
+set.seed(12345)
 
 source("~/rare-var/kpop.R")
 
@@ -100,7 +101,7 @@ return(list("s1"=spectrum.1, "s2"=spectrum.2))
 }
 
 
-ntrees <- 100000
+ntrees <- 200000
 nsamples <- 50
 
 spectrum.1 <- rep(0, nsamples)
@@ -146,13 +147,13 @@ s.spec2 <- s$s2/sum(s$s2)
 e.spec1 <- e$s1/sum(e$s1)
 e.spec2 <- e$s2/sum(e$s2)
 
-par(mfrow=c(1,2))
 
 pdf("~/spectrum/plots/simulated_repeat_mutation_spectrum.pdf")
-plot(s.spec2/expect, pch=16, type="o", col="#E41A1C", xlim=c(0,10), ylim=c(0,3), xlab="Allele count", ylab="Relative frequency spectrum (compared to ~1/n)")
+par(mar=c(5.1, 5.1, 4.1, 2.1))
+plot(s.spec2/expect, pch=16, type="o", col="#E41A1C", xlim=c(0,10), ylim=c(0,3), xlab="Allele count", ylab="Relative frequency spectrum (compared to ~1/n)",cex.axis=1.4, cex.lab=1.5)
 points(e.spec1/expect, pch=16, type="o", col="#377EB8", xlim=c(1,10))
 points(e.spec2/expect, pch=16, type="o", col="#4DAF4A", xlim=c(1,10))
-legend("topright", c("Repeat mutations with constant size", "Single mutations with exponential growth", "Repeat mutations with exponential growth"), col=c("#E41A1C","#377EB8","#4DAF4A"), pch=16, lty=1, bty="n")
+legend("topright", c("Repeat mutations with constant size", "Single mutations with exponential growth", "Repeat mutations with exponential growth"), col=c("#E41A1C","#377EB8","#4DAF4A"), pch=16, lty=1, bty="n", cex=1.2)
 abline(h=1, lty=2)
 dev.off()
 
@@ -162,12 +163,13 @@ ec.100 <- make.spectrum(ntrees, nsamples, expfun.100, double.prob=0.1)
 ec.1000 <- make.spectrum(ntrees, nsamples, expfun.1000, double.prob=0.1)
 
 pdf("~/spectrum/plots/simulated_CpG_spectrum_proportion.pdf")
+par(mar=c(5.1, 5.1, 4.1, 2.1))
 a <- 0.85
-plot((1-a)*sc$s2/((1-a)*sc$s2+a*sc$s1), xlim=c(0,20), ylim=c(0.13,0.23), type="o", pch=16, xlab="Allele count", ylab="Proportion of CpG mutations", lwd=2)
+plot((1-a)*sc$s2/((1-a)*sc$s2+a*sc$s1), xlim=c(0,20), ylim=c(0.13,0.23), type="o", pch=16, xlab="Allele count", ylab="Proportion of CpG mutations", lwd=2,cex.axis=1.4, cex.lab=1.5)
 points((1-a)*ec.10$s2/((1-a)*ec.10$s2+a*ec.10$s1), xlim=c(0,20), pch=16, type="o", col="#66C2A5", lwd=2)
 points((1-a)*ec.100$s2/((1-a)*ec.100$s2+a*ec.100$s1), xlim=c(0,20), pch=16, type="o", col="#FC8D62", lwd=2)
 points((1-a)*ec.1000$s2/((1-a)*ec.1000$s2+a*ec.1000$s1), xlim=c(0,20), pch=16, type="o", col="#8DA0CB", lwd=2)
-legend("topright", c("Constant size", "10-fold exponential growth", "100-fold exponential growth", "1000-fold exponential growth"), pch=16, lty=1, col=c("black", "#66C2A5", "#FC8D62", "#8DA0CB"), bty="n", lwd=2)
+legend("topright", c("Constant size", "10-fold exponential growth", "100-fold exponential growth", "1000-fold exponential growth"), pch=16, lty=1, col=c("black", "#66C2A5", "#FC8D62", "#8DA0CB"), bty="n", lwd=2, cex=1.2)
 dev.off()
     
-## save.image(file="~/spectrum/plots/repeat_mutation_data.Rdata")
+save.image(file="~/spectrum/plots/repeat_mutation_data.Rdata")
