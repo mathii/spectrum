@@ -74,8 +74,9 @@ out.ratio <- ratio[!(name.map[names(ratio)] %in% out.pops)]
 pt <- t.test(in.ratio, out.ratio)$p.value
 
 pdf(paste0("~/spectrum/plots/strand_bias.n", n, ".sig", sig.name, ".pdf"))
-boxplot(ratio~name.map[names(ratio)], col=cols[unique(name.map[names(ratio)])], pch=16, cex=0.5, ylim=c(-0.4,0.4), bty="n", xlab="", xaxt="n", main=paste0("Signature ", sig.name, " (P=", format(p,digits=2, scientific=p<0.01), " , ", format(pt,digits=2, scientific=pt<0.01), ")"), ylab="Log-ratio strand bias", frame=F, width=box.width, at=box.at) 
-mtext(unique(name.map[names(ratio)]), at=box.at, las=2, side=1, line=-4)
+par(mar=c(7.1, 4.1, 4.1, 2.1))
+boxplot(ratio~name.map[names(ratio)], col=cols[unique(name.map[names(ratio)])], pch=16, cex=0.5, ylim=c(-0.4,0.4), bty="n", xlab="", xaxt="n", main=paste0("Signature ", sig.name, " (P=", format(p,digits=2, scientific=p<0.01), " , ", format(pt,digits=2, scientific=pt<0.01), ")"), ylab="Log-ratio strand bias", frame=F, width=box.width, at=box.at, cex.axis=1.8, cex.lab=1.8, cex.main=1.8) 
+mtext(unique(name.map[names(ratio)]), at=box.at, las=2, side=1, line=-4, cex=1.6)
 dev.off()
 
 pdf(paste0("~/spectrum/plots/strand_bias.n", n, ".sig", sig.name, "_subplots.pdf"))
@@ -97,7 +98,7 @@ for(i in 1:4){
     out.rat <- rat[!(name.map[names(rat)] %in% out.pops)]
     pt <- t.test(in.rat, out.rat)$p.value
     
-    plot(box.at, agg$x, col=cols[agg$Group.1], pch=16, cex=2, bty="n", xaxt="n", ylim=c(-0.4, 0.4), ylab="", xlab="", main=paste0(gsub( ".", ">", sg, fixed=TRUE), " (P=", format(p,digits=2, scientific=pt<0.01), " , ", format(pt,digits=2, scientific=p<0.01), ")"))
+    plot(box.at, agg$x, col=cols[agg$Group.1], pch=16, cex=2, bty="n", xaxt="n", ylim=c(-0.4, 0.4), ylab="", xlab="", main=paste0(gsub( ".", ">", sg, fixed=TRUE), " (P=", format(p,digits=2, scientific=pt<0.01), " , ", format(pt,digits=2, scientific=p<0.01), ")"),cex.axis=1.4, cex.lab=1.4, cex.main=1.6)
     segments(box.at, agg$x-2*agg.sd$x, y1=agg$x+2*agg.sd$x,  col=cols[agg.sd$Group.1], lwd=1)
     segments(box.at, agg$x-agg.sd$x, y1=agg$x+agg.sd$x,  col=cols[agg.sd$Group.1], lwd=2)
     

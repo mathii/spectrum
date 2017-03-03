@@ -1,7 +1,7 @@
 ## Compare the decompositions from PCA, sparse PCA and Non-negative Matrix factorisation.
 library("RColorBrewer")
-library("nsprcomp")
-library("NMF")
+## library("nsprcomp")
+## library("NMF")
 source("~/spectrum/code/spectrumlib.R")
 
 exclude.cell.lines <- FALSE

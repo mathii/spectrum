@@ -4,7 +4,7 @@ library("RColorBrewer")
 source("~/spectrum/code/spectrumlib.R")
 
 exclude.cell.lines <- FALSE
-n <- 2
+n <- 1
 
 tag <- ifelse(exclude.cell.lines, ".NoCellLines", "")
 inname <- paste0("~/spectrum/data/spectrum_matrix.n", n,tag, ".txt")
