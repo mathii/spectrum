@@ -24,3 +24,19 @@ pdf(paste0("~/spectrum/plots/CellLine_PCA.n",n, ifelse(exclude.cell.lines, ".noC
 plot(pca$x[,1], pca$x[,2], xlab="PCA1", ylab="PCA2", col=ifelse(cell.line=="CellLine", "red", "blue"), pch=ifelse(cell.line=="CellLine", 13, 1))
 legend("bottomleft", c("Cell line sample", "Primary tissue sample"), col=c("red", "blue"), pch=c(13,1), bty="n")
 dev.off()
+
+pdf(paste0("~/spectrum/plots/Loadings_PCA.n",n, ifelse(exclude.cell.lines, ".noCellLines", ""), ".pdf"), 12, 6)
+plot.loadings(pca$rotation, n.loadings=2, rescale=FALSE)
+dev.off()
+
+mdl <- glm( as.factor(cell.line)~pca$x[,1]+pca$x[,2]  , family=binomial)
+plot(pca$x[,1], pca$x[,2], xlab="PCA1", ylab="PCA2", col=ifelse(cell.line=="CellLine", "red", "blue"), pch=ifelse(cell.line=="CellLine", 13, 1))
+slope <- coef(mdl)[2]/(-coef(mdl)[3])
+intercept <- coef(mdl)[1]/(-coef(mdl)[3]) 
+abline(intercept,slope, col="black")
+
+pdf(paste0("~/spectrum/plots/CellLine_PCA_separating_component.n",n, ifelse(exclude.cell.lines, ".noCellLines", ""), ".pdf"), 12, 6)
+sig.slope=-1/slope
+sig.load <- pca$rotation[,1]+sig.slope*pca$rotation[,2]
+plot.loadings(as.matrix(sig.load), n.loadings=1, rescale=FALSE)
+dev.off()

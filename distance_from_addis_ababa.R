@@ -16,7 +16,7 @@ data <- read.table(dataname, as.is=TRUE)
 rownames(data) <- data[,1]
 data <- data[,2:NCOL(data)]
 
-het.rate <- read.table("~/spectrum/hets/het_rate_fl1.txt", as.is=TRUE, header=TRUE)
+het.rate <- read.table("~/spectrum/het_rate/het_rate_mlrho.txt", as.is=TRUE, header=TRUE)
 hn <- gsub("-", ".", het.rate[,1])
 het.rate <- het.rate[,2]
 names(het.rate) <- hn
