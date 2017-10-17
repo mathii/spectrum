@@ -13,20 +13,20 @@ if(length(cA)>0){
 
 ####################################################
 
-## sig.name <- 1
-## sig <- c("TCC.T", "ACC.T", "TCT.T", "CCC.T")
-## ylim=c(0.07, 0.11)
-## spr<-0.5
-## ns <- 1:30
-## wts<-c(10,20,10,5,rep(1,length(ns)-4))
+sig.name <- 1
+sig <- c("TCC.T", "ACC.T", "TCT.T", "CCC.T")
+ylim=c(0.07, 0.11)
+spr<-0.5
+ns <- 1:30
+wts<-c(10,20,10,5,rep(1,length(ns)-4))
 
-sig.name <- 2
-sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
-ylim=c(0.12, 0.19)
-in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
-spr <- 0.25
-ns <- 1:15
-wts<-c(100,100,10,10,10,20,rep(1,length(ns)-6))
+## sig.name <- 2
+## sig <- c("ACG.T", "CCG.T", "GCG.T", "TCG.T")
+## ylim=c(0.12, 0.19)
+## in.ind <- c("S_Chane.1", "S_Piapoco.2", "S_Quechua.3", "S_Mayan.1", "S_Mayan.2", "S_Quechua.1", "S_Nahua.1", "S_Quechua.2", "S_Nahua.2", "S_Zapotec.1", "S_Mixtec.1")
+## spr <- 0.25
+## ns <- 1:15
+## wts<-c(100,100,10,10,10,20,rep(1,length(ns)-6))
 
 ####################################################
 
@@ -76,13 +76,17 @@ for(i in 1:length(ns)){
 regions <- regions[!is.nan(unlist(proportions[1,]))]
 
 pdf(paste0("~/spectrum/plots/fn_sig", sig.name, what, ".pdf"))
-plot(ns, proportions[,regions[1]], pch=16, cex=0.75, col=cols[regions[1]], ylim=ylim, xlab="Allele count", ylab=bquote("Proportion of signature"~.(sig.name)~f[2]~"mutations"), xlim=range(ns))
+par(mar=c(5.1, 5.1, 4.1, 2.1))
+plot(ns, proportions[,regions[1]], pch=16, cex=0.75, col=cols[regions[1]], ylim=ylim, xlab="Allele count", ylab=bquote("Proportion of signature"~.(sig.name)~"mutations"), xlim=range(ns), cex.axis=1.4, cex.lab=1.5)
 lines(smooth.spline(ns, proportions[,regions[1]], spar=spr, w=wts), col=cols[regions[1]], lty=ltys[regions[1]], lwd=2)
 for(i in 2:length(regions)){
     points(ns, proportions[,regions[i]], pch=16, cex=0.75,  col=cols[regions[i]])
     inc<-!is.na(proportions[,regions[i]])
-    ## lines(smooth.spline(ns[inc], proportions[,regions[i]][inc], spar=spr, w=wts[inc]), col=cols[regions[i]], lty=ltys[regions[i]], lwd=2)
+    if(sig.name==1){
+    lines(smooth.spline(ns[inc], proportions[,regions[i]][inc], spar=spr, w=wts[inc]), col=cols[regions[i]], lty=ltys[regions[i]], lwd=2)
+  }else{
     lines(ns[inc], proportions[,regions[i]][inc], col=cols[regions[i]], lty=ltys[regions[i]], lwd=2)
-}
-legend("topright", regions, lwd=2, col=cols[regions], lty=ltys[regions], pch=16, bty="n", ncol=2)
+  }
+  }
+legend("topright", regions, lwd=2, col=cols[regions], lty=ltys[regions], pch=16, bty="n", ncol=1, cex=1.2)
 dev.off()

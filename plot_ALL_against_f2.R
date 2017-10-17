@@ -55,8 +55,9 @@ ALL.variants.total <- colSums(ALL.data)
 ALL.notsig.total <- colSums(ALL.data[!(rownames(ALL.data) %in% sig),])
 
 pdf(paste0("~/spectrum/plots/plot_all_against_f2_sig", sig.name, what, ".pdf"))
-plot(f2.proportion, ALL.proportion, col=cols[reg[names(f2.proportion)]], xlab=paste0("Proportion of f2 variants that are signature ", sig.name), ylab=paste0("Proportion of all variants, per genome, that are signature ", sig.name), pch=ifelse(grepl("^B", names(f2.proportion)), 2, 1))
-legend("bottomright", c(names(cols), "S Panel", "B Panel"), col=c(cols, "black", "black"), bty="n", pch=c(rep(1, 8), 2))
+par(mar=c(5.1, 5.1, 4.1, 2.1))
+plot(f2.proportion, ALL.proportion, col=cols[reg[names(f2.proportion)]], xlab=bquote("Proportion of"~f[2]~"variants that are signature"~.(sig.name)), ylab=paste0("Proportion of all variants that are signature ", sig.name), pch=ifelse(grepl("^B", names(f2.proportion)), 2, 1), cex.axis=1.4, cex.lab=1.5)
+legend(ifelse(sig.name==1, "topleft", "bottomright"), c(names(cols), "S Panel", "B Panel"), col=c(cols, "black", "black"), bty="n", pch=c(rep(1, 8), 2), cex=1.2, ncol=2)
 dev.off()
 
 ## t.test(ALL.proportion[reg[names(ALL.proportion)]%in%c("America", "CentralAsiaSiberia", "EastAsia", "Oceania", "SouthAsia", "WestEurasia")], ALL.proportion[hi.ind])

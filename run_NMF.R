@@ -74,7 +74,7 @@ if(spec=="count"){
 
 pdf(paste0("~/spectrum/plots/","Components",  outtag, "_NMF.n", n, ".r", rank, tag, ".pdf"), 12, 12)
 if(n=="2" & rank==4 & method=="ica" & spec=="totalnorm"){
-    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(2,3,3,3), yploti=c(4,1,4,2))
+    plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(1,3,1,2), yploti=c(4,2,2,3))
 }else if(n=="2" & rank==4 & method=="ica"){
     plot.components(coeff, name.map, src, cols=cols, n.components=rank, layout=c(2,2), xploti=c(3,4,1,2), yploti=c(1,2,4,3))
 }else if(n=="2" & rank==4 & method=="random"){

@@ -16,7 +16,7 @@ data <- read.table(dataname, as.is=TRUE)
 rownames(data) <- data[,1]
 data <- data[,2:NCOL(data)]
 
-het.rate <- read.table("~/spectrum/hets/het_rate_fl1.txt", as.is=TRUE, header=TRUE)
+het.rate <- read.table("~/spectrum/het_rate/het_rate_mlrho.txt", as.is=TRUE, header=TRUE)
 hn <- gsub("-", ".", het.rate[,1])
 het.rate <- het.rate[,2]
 names(het.rate) <- hn
@@ -50,6 +50,7 @@ plot(distance.from.cairo[include], data[include,which], col=cols[info[include,"R
 legend("topleft", names(cols), col=cols, bty="n", pch=16)
 dev.off()
 
+
 mod <- lm(data[include,which]~distance.from.cairo[include]+het.rate[include])
 print(summary(mod))
 
@@ -65,3 +66,25 @@ text(distance.from.addis.ababa[labl], het.rate[labl], rownames(data)[labl], cex=
 legend("topright", names(cols), col=cols, bty="n", pch=16)
 dev.off()
 
+## Now plot conditioned on San
+conditioned<-read.table("het_conditioned_S_Khomani_San-1.txt", as.is=T)
+conditioned.het <- conditioned[,3]/conditioned[,2]
+names(conditioned.het) <- gsub("-", ".", conditioned[,1])
+conditioned.het<-conditioned.het*het.rate["S_Mbuti.1"]/conditioned.het["S_Mbuti.1"]
+conditioned.het <- conditioned.het[!grepl("Khomani_San", names(conditioned.het))]
+conditioned.het <- conditioned.het[!grepl("Ju_hoan", names(conditioned.het))]
+losch.dist <- c(distm( c(6.4, 49.81), c(31.23, 30.04))/1000+2608.397)
+stut.dist <- c(distm( c(9.18, 48.78), c(31.23, 30.04))/1000+2608.397)
+ust.dist <- c(distm( c(71.1, 57.7), c(31.23, 30.04))/1000+2608.397)
+d.ex <- c(distance.from.addis.ababa, Loschbour=losch.dist, Stuttgart=stut.dist, Ust_Ishim=ust.dist)
+d.ex <- d.ex[names(conditioned.het)]
+nm <- names(conditioned.het)
+dcol <- ifelse(nm %in% rownames(info), cols[info[nm,"Region"]], "black")
+dpch <- ifelse(nm %in% c("Loschbour", "Stuttgart", "Ust_Ishim"), 16, 1)
+pdf("~/spectrum/hets/distance_from_addis_ababa_conditional.pdf")
+plot(d.ex, conditioned.het, col=dcol, xlab="Distance from Addis Ababa (km)", ylab="Heterozygosity", pch=dpch)
+tt <- c("Loschbour", "Stuttgart", "Ust_Ishim")
+text( d.ex[tt], conditioned.het[tt], tt, pos=c(1,1,4))
+labl <-  c(64, 139, 158, 183, 20,  47)
+text(distance.from.addis.ababa[labl], het.rate[labl], rownames(data)[labl], cex=0.5, pos=4)
+dev.off()
