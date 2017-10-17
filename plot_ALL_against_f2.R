@@ -75,7 +75,6 @@ dev.off()
 GC.AT<-substr(rownames(ALL.data),2,2) %in% c("G", "C")&substr(rownames(ALL.data),5,5)%in% c("A", "T")
 AT.GC <- substr(rownames(ALL.data),2,2) %in% c("A", "T")&substr(rownames(ALL.data),5,5)%in% c("G", "C")
 Other <- !(GC.AT|AT.GC)
-
 AD<-ALL.data[!grepl("^B", colnames(ALL.data))]
 Biased.GC <- data.frame()
 d1 <- colSums(AD[GC.AT,])
@@ -90,3 +89,16 @@ Biased.GC <- rbind(Biased.GC, dd)
 Biased.GC$pop <- reg[Biased.GC$ID]
 Biased.GC$Africa <- ifelse(Biased.GC$pop=="Africa", "Africa", "Non-Africa")
 boxplot(Value~Africa+Type, data=Biased.GC)
+
+Ts<-(substr(rownames(ALL.data),2,2)=="C"&substr(rownames(ALL.data),5,5)=="T")|(substr(rownames(ALL.data),2,2)=="T"&substr(rownames(ALL.data),5,5)=="C")|(substr(rownames(ALL.data),2,2)=="A"&substr(rownames(ALL.data),5,5)=="G")|(substr(rownames(ALL.data),2,2)=="G"&substr(rownames(ALL.data),5,5)=="A")
+Tv <- !Ts
+Ts.Tv <- data.frame()
+d1 <- colSums(AD[Ts,])
+dd <- data.frame("Type"="Ts", "ID"=names(d1), "Total"=d1, "Relative"=c(t(d1))/mean(c(t(d1))), stringsAsFactors=FALSE)
+Ts.Tv <- rbind(Ts.Tv, dd)
+d1 <- colSums(AD[Tv,])
+dd <- data.frame("Type"="Tv", "ID"=names(d1), "Total"=d1, "Relative"=c(t(d1))/mean(c(t(d1))), stringsAsFactors=FALSE)
+Ts.Tv <- rbind(Ts.Tv, dd)
+Ts.Tv$pop <- reg[Ts.Tv$ID]
+Ts.Tv$Africa <- ifelse(Ts.Tv$pop=="Africa", "Africa", "Non-Africa")
+boxplot(Value~Africa+Type, data=Ts.Tv)
