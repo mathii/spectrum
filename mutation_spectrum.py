@@ -235,7 +235,7 @@ def main(options):
                     continue
                             
             tnc=reference[chrom][(pos-1-half_n_context):(pos+half_n_context)].seq.upper()
-            if tnc[1]!=ref:
+            if tnc[half_n_context]!=ref:
                 skipped+=1
                 continue
             
