@@ -269,7 +269,7 @@ def main(options):
 
             if include_this_mutation:
                 counted+=1
-                tac=tnc
+                tac=tnc.encode("utf-8")
                 tac[half_n_context]=anc
                 key=(tac, mut)
                 if key in results:
