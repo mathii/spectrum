@@ -269,8 +269,9 @@ def main(options):
 
             if include_this_mutation:
                 counted+=1
-                tac=tnc.encode("utf-8")
+                tac=list(tnc)
                 tac[half_n_context]=anc
+                tac="".join(tac)
                 key=(tac, mut)
                 if key in results:
                     for igt in which_is_het:
