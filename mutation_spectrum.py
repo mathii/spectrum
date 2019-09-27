@@ -23,11 +23,11 @@ def parse_options():
     options ={"vcf":None, "ref":None, "ref_sample":None, "out":"results", "count":None,
               "AA_INFO":False, "mpf":None, "filter_file":None, "filter_values":(),
               "filter_list":None, "pos_out":None, "private_panel":None, "hom_weight":2,
-              "max_missing":0}
+              "max_missing":0, "n_context":3}
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:n:f:l:i:h:x:a",
-        ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "private_panel", "filter_file", "filter_value", "filter_list", "hom_weight", "max_missing", "AA_INFO"])
+        opts, args = getopt.getopt(sys.argv[1:], "v:r:s:o:m:c:p:n:f:l:i:h:x:at:",
+        ["vcf", "ref", "ref_sample", "out", "mpf", "count", "pos_out", "private_panel", "filter_file", "filter_value", "filter_list", "hom_weight", "max_missing", "AA_INFO", "n_context"])
 
     except Exception as err:
         print( str(err), file=sys.stderr)
@@ -48,9 +48,12 @@ def parse_options():
         elif o in ["-f","--filter_file"]:   options["filter_file"] = a #Filter values according to this fasta file
         elif o in ["-l","--filter_value"]:  options["filter_values"] = set(a.split(",")) #Include sites that match these values in the fasta
         elif o in ["-i","--filter_list"]:   options["filter_list"] = a #A file containing a specific list of sites to include chr/pos
-        
+        elif o in ["-t","--n_context"]:     options["n_context"] = int(a) #Nucleotide context
     print( "found options:", file=sys.stderr)
     print( options, file=sys.stderr)
+
+    if not options["n_context"] % 2 or options["n_context"]<1:
+        raise Exception("nucleotide context must be a positive odd number")
 
     if not options["count"]:
         print("***** Using variants of all counts ******")
@@ -70,20 +73,27 @@ def open2(f, mode="r"):
 
 ##########################################################################################################
 
-def make_dict(N_samples):
+def make_dict(N_samples, options):
     '''
     Make the array to store the results - a dict with keys given by ('XYZ', 'W") which represents
     a trinucleotide mutation XYZ->XWZ
     '''
     
     d={}
-    for a in BASES:
-        for b in BASES:
-            for c in BASES:
-                for x in BASES:
-                    if x!=b:
-                        d[(a+b+c,x)]=[0]*N_samples
-                         
+    keys=[""]
+    for i in range(options["n_context"]):
+        new_keys=[]
+        for a in BASES:
+            for k in keys:
+                new_keys.append(a+k)
+        keys=new_keys
+        
+    midpoint=options["n_context"]//2
+    for k in keys:
+        for a in BASES:
+            if a!=k[midpoint]:
+                d[(k,a)]=[0]*N_samples
+                
     return d
 
 
@@ -162,6 +172,8 @@ def main(options):
     missing=0
     counted=0
 
+    half_n_context=options["n_context"]//2
+
     for line in data:
         line_i+=1
         if line.startswith("##"):
@@ -169,7 +181,7 @@ def main(options):
         elif line.startswith("#"): #Header line
             bits=line.split()
             N_samples=len(bits)-9
-            results=make_dict(N_samples)
+            results=make_dict(N_samples, options)
             if options["ref_sample"] and not options["AA_INFO"]:
                 polarise_i=bits.index(options["ref_sample"])-9
             results["samples"]=bits[9:]
@@ -222,7 +234,7 @@ def main(options):
                     skipped+=1
                     continue
                             
-            tnc=reference[chrom][(pos-2):(pos+1)].seq.upper()
+            tnc=reference[chrom][(pos-1-half_n_context):(pos+half_n_context)].seq.upper()
             if tnc[1]!=ref:
                 skipped+=1
                 continue
