@@ -269,7 +269,9 @@ def main(options):
 
             if include_this_mutation:
                 counted+=1
-                key=(tnc[0]+anc+tnc[2], mut)
+                tac=tnc
+                tac[half_n_context]=anc
+                key=(tac, mut)
                 if key in results:
                     for igt in which_is_het:
                         results[key][igt]+=1
